@@ -7,11 +7,11 @@ package QueryProcessorForMFandEMF;
 
 /**
  *
- * @author Holly
+ * @author Hangyu Wang
  */
 public class CodeGenerator {
     public static void main(String[] args){
-     System.out.println("afd");
+//     System.out.println("afd");
     
     
     }

@@ -16,10 +16,10 @@ public class PhiStruct {
     private List<String> gAttributes;
     private List<String> aggregateFuncs;
     private List<String> predicateOfGVars;
-    private List<String> predicateOfHaving; 
+    private String predicateOfHaving; 
     PhiStruct(List<String> projectedAttributes, Integer numOfGVars,
              List<String> gAttributes, List<String> aggregateFuncs, 
-             List<String> predicateOfGVars, List<String> predicateOfHaving){
+             List<String> predicateOfGVars, String predicateOfHaving){
         this.projectedAttributes = projectedAttributes;
         this.numOfGVars = numOfGVars;
         this.gAttributes = gAttributes;
@@ -43,7 +43,7 @@ public class PhiStruct {
     public List<String> getCond_GV(){
         return predicateOfGVars;
     }
-    public List<String> getCond_Having(){
+    public String getCond_Having(){
         return predicateOfHaving;
     }
 }
