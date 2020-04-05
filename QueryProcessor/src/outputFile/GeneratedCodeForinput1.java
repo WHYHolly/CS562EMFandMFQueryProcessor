@@ -14,15 +14,26 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class codeSample {
-    
+public class GeneratedCodeForinput1{
     class MFStruct{
-        /*
-        *  TODO: Here to generate by using Processor;
-        */
-        
-    }
+        String cust;
+        String prod;
+        Integer sum_1_quant;
+        Integer avg_1_quant;
+        Integer sum_2_quant;
+        Integer sum_3_quant;
+        Integer avg_3_quant;
+        MFStruct(){
 
+                cust = "";
+                prod = "";
+                sum_1_quant = null;
+                avg_1_quant = null;
+                sum_2_quant = null;
+                sum_3_quant = null;
+                avg_3_quant = null;
+        }
+    }
     private static final String USER ="postgres";
     private static final String PWD ="m8kimmWhyholly";
     private static final String URL ="jdbc:postgresql://localhost:5432/postgres";
@@ -34,7 +45,7 @@ public class codeSample {
     * connect DB
     */
     public static void main(String[] args){
-        codeSample res = new codeSample();
+        GeneratedCodeForinput1 res = new GeneratedCodeForinput1();
         res.connect();
         res.retreive();
         res.close();
@@ -86,27 +97,31 @@ public class codeSample {
             more = rstm.next();
             
             while(more){
-//                if(true){
-//                    String key = "" + rstm.getString("prod") + rs.getInt("month");
+                if(true) {
+                    String key = "" + rstm.getString("cust")+ rstm.getString("prod");
                     if(!keySet.contains(key)){
                         MFStruct newStrcut = new MFStruct();
-                        
+                        newStrcut.cust = rstm.getString("cust");
+                        newStrcut.prod = rstm.getString("prod");
                         structList.add(newStrcut);//                        keyToStruct.put(key, newStrcut);
                     }
-//                }
-
+                }
+                more = rstm.next();
             }
-//            for(){
-//            
-//            
-//            
-//            
-//            
+            System.out.printf("%-7s  ", "cust");
+            System.out.printf("%-7s  ", "prod");
+            System.out.printf("%-7s  ", "1_sum_quant");
+            System.out.printf("%-7s  ", "2_sum_quant");
+            System.out.printf("%-7s  \n", "3_sum_quant");
 //            }
             //Here is to Generate the 
             for(MFStruct curStruct: structList){
 //                MFStruct curStruct = keyToStruct.get(key);
-
+                System.out.printf("%-7s  ", curStruct.cust);
+                System.out.printf("%-7s  ", curStruct.prod);
+                System.out.printf("%-7s  ", curStruct.sum_1_quant);
+                System.out.printf("%-7s  ", curStruct.sum_2_quant);
+                System.out.printf("%-7s  ", curStruct.sum_3_quant);
                 System.out.println();
             }
         

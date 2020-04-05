@@ -14,7 +14,7 @@ public class PhiStruct {
     private List<String> projectedAttributes;
     private Integer numOfGVars;
     private List<String> gAttributes;
-    private List<String> aggregateFuncs;
+    private List<Group> aggregateFuncs;
     private List<String> predicateOfGVars;
     private String predicateOfHaving; 
     PhiStruct(List<String> projectedAttributes, Integer numOfGVars,
@@ -23,7 +23,11 @@ public class PhiStruct {
         this.projectedAttributes = projectedAttributes;
         this.numOfGVars = numOfGVars;
         this.gAttributes = gAttributes;
-        this.aggregateFuncs = aggregateFuncs;
+        this.aggregateFuncs = new ArrayList<>();
+        for(String str: aggregateFuncs){
+            String[] tempArr = str.split("_");
+            this.aggregateFuncs.add(new Group(tempArr[0], tempArr[1], tempArr[2]));
+        }
         this.predicateOfGVars = predicateOfGVars;
         this.predicateOfHaving = predicateOfHaving;
     }
@@ -37,7 +41,7 @@ public class PhiStruct {
     public List<String> getG_ATTR(){
         return gAttributes;
     }
-    public List<String> getAggFunc(){
+    public List<Group> getAggFunc(){
         return aggregateFuncs;
     }
     public List<String> getCond_GV(){
@@ -45,5 +49,17 @@ public class PhiStruct {
     }
     public String getCond_Having(){
         return predicateOfHaving;
+    }
+}
+
+class Group{
+    public String sub;
+    public String aggType;
+    public String attr;
+    
+    public Group(String sub, String aggType, String attr){
+        this.sub = sub;
+        this.aggType = aggType;
+        this.attr = attr;
     }
 }
