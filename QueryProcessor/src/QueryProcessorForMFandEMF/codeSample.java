@@ -26,9 +26,9 @@ public class codeSample {
     private static final String USER ="postgres";
     private static final String PWD ="m8kimmWhyholly";
     private static final String URL ="jdbc:postgresql://localhost:5432/postgres";
-    private PreparedStatement ps = null;
+//    private PreparedStatement ps = null;
     private Connection conn = null;
-    private ResultSet rs = null;
+//    private ResultSet rs = null;
     
     /*
     * connect DB
@@ -55,12 +55,12 @@ public class codeSample {
     */
     void close(){
         try{
-            if(rs != null) {
-                rs.close();
-            }
-            if (ps != null) {
-                ps.close();
-            }
+//            if(rs != null) {
+//                rs.close();
+//            }
+//            if (ps != null) {
+//                ps.close();
+//            }
             if (conn != null) {
                 conn.close();
             }
@@ -91,23 +91,30 @@ public class codeSample {
                     if(!keySet.contains(key)){
                         MFStruct newStrcut = new MFStruct();
                         
-                        structList.add(newStrcut);//                        keyToStruct.put(key, newStrcut);
+                        structList.add(newStrcut);
+                        keySet.add(key);
                     }
-//                }
+                    
 
             }
-//            for(){
-//            
-//            
-//            
-//            
-//            
-//            }
-            //Here is to Generate the 
+            
+            for(int i = 1; i <= count; i++){
+                for(MFStruct curStruct: structList){
+                    rstm = pstm.executeQuery(); 
+                    more = rstm.next();
+                    while(more){
+                        switch(i){
+//              Here is the code to fill
+                        }
+                        more = rstm.next();  
+                    }   
+                }
+            }
+//          Here is the out put
             for(MFStruct curStruct: structList){
 //                MFStruct curStruct = keyToStruct.get(key);
 
-                System.out.println();
+//                System.out.println();
             }
         
         }catch(Exception exception){
@@ -117,7 +124,4 @@ public class codeSample {
     
     
     }
-
-    
-
 }
