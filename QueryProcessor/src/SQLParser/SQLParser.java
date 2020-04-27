@@ -9,12 +9,19 @@ package SQLParser;
  *
  * @author Hangyu Wang
  */
-import java.util.*;
-import java.util.regex.*;
-import java.io.*;
-import java.sql.*;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+
+import java.util.*;
+import java.util.regex.*;
+
+import java.io.*;
+
+import java.sql.*;
+
+import java.nio.charset.StandardCharsets;
 
 
 import utils.*;
@@ -54,7 +61,7 @@ public class SQLParser {
         while(m.find()){
 //            System.out.println("matched");
             for(String g: groupName){
-                System.out.println(g + ":\n" + m.group(g));
+//                System.out.println(g + ":\n" + m.group(g));
                 if(m.group(g) != null){
                     clauseToParser.get(g).setSql(m.group(g));
                 }
@@ -80,10 +87,12 @@ public class SQLParser {
                 case "suchthat":
                     if(clauseToParser.get("suchthat").sql == null){
                         sixOps.setCondOfGVars(new ArrayList<>());
+                        sixOps.setOpt(null);
                     }else{
                         clauseToParser.get("suchthat").parseClause(nameToType, varToNum, aggFuns);
     //                    System.out.println(clauseToParser.get("suchthat").getParsedClause());
                         sixOps.setCondOfGVars((List<String>) clauseToParser.get("suchthat").getParsedClause());
+                        sixOps.setOpt(clauseToParser.get("suchthat").getGraph());
                     }
                     break;
                 case "select":
@@ -104,7 +113,7 @@ public class SQLParser {
                         List<String> conds = new ArrayList<>();
                         String cond0 = tempList.get(0);
                         conds.add("if(" + cond0 + ")");
-                        System.out.println(sixOps.getCondOfGVars());
+//                        System.out.println(sixOps.getCondOfGVars());
                         for(String c: sixOps.getCondOfGVars()){
                             conds.add("if(" + cond0 +" && "+ "(" + c +") )");
                         }
@@ -123,13 +132,13 @@ public class SQLParser {
             }
         }
         sixOps.setAggFuncs(expParser.parserFuncs(aggFuns));
-//        System.out.println(aggFuns);
 //        System.out.println(sixOps);
     }
     
     public sixOperators getSixOps(){
         return this.sixOps;
     }
+    
     public JSONObject getJSONFormat(){
         JSONObject j = new JSONObject();
         try{
@@ -139,29 +148,38 @@ public class SQLParser {
             j.put("aggFuncs", this.getSixOps().getAggFuncs());
             j.put("condOfGVars", this.getSixOps().getCondOfGVars());
             j.put("condOfHaving", this.getSixOps().getCondOfHaving());
+            j.put("Opt", this.getSixOps().getOpt());
         }catch(Exception e){
             System.out.println("Something wrong when you JSON IT!");
         }
-        
-        
+
         return j;
     }
 
+    
     public static void main(String[] args){
 
-        String sql = "select cust, sum(x.quant), sum(y.quant), sum(z.quant) \n" +
-"from sales where yr=1997 \n" +
-"group by cust\n" +
-"such that x.state = 'NY',\n" +
-"          y.state = 'NJ',\n" +
-"          z.state = 'CT'\n" +
-"having sum(x.quant) > 2 * sum(y.quant)";
+        String file = "input1.json";
+        File inputSQl = new File("./src/SQLFile/sql1.sql");
+       
         
-        SQLParser sqlP = new SQLParser(sql);
-        sqlP.generalParser();
-        sqlP.initParser();
-        System.out.println(sqlP.getJSONFormat().toString());
-        
+        try{
+            String sql = FileUtils.readFileToString(inputSQl, StandardCharsets.UTF_8);
+//            System.out.println("Here is the SQL;///////////////");
+//            System.out.println(sql);
+            File newfile = new File("./src/inputFile/" + file);
+            FileWriter p = new FileWriter("./src/inputFile/" + file);
+            SQLParser sqlP = new SQLParser(sql);
+            sqlP.generalParser();
+            sqlP.initParser();
+            p.write(sqlP.getJSONFormat().toString());
+            p.flush();
+            System.out.println(sqlP.getJSONFormat().toString());
+
+        }catch(Exception e){
+            System.out.println("Something wrong with the SQL parser!");
+            e.printStackTrace();
+        }
     }
 }
 

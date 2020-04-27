@@ -29,7 +29,7 @@ public class parserWhere extends partialParser{
     public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
         if(sql != null && sql.length() != 0){
             
-            this.parsedSql.add(expParser.parserCond(sql.trim().toLowerCase(), attrToType, varToNum, aggFuns));
+            this.parsedSql.add(expParser.parserCond(sql.trim(), attrToType, varToNum, aggFuns, new ArrayList<>()));
         }
     }
 //    @Override

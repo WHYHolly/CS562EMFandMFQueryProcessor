@@ -10,6 +10,7 @@ package utils;
  * @author Holly
  */
 import java.util.*;
+import org.json.JSONArray;
 public class partialParser{
     public String clause;
     public String sql;
@@ -37,6 +38,8 @@ public class partialParser{
     public String getGAttributes(){
         return null;
     }
-
-
+    
+    public JSONArray getGraph(){
+        return null;
+    }
 }

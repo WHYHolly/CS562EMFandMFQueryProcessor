@@ -49,7 +49,7 @@ public class GeneratedCodeForinput1{
     * connect DB
     */
     public static void main(String[] args){
-        codeSample res = new codeSample();
+        GeneratedCodeForinput1 res = new GeneratedCodeForinput1();
         res.connect();
         res.retreive();
         res.close();
@@ -122,7 +122,7 @@ public class GeneratedCodeForinput1{
                     while(more){
                         switch(i){
                             case 1:
-                                if(rstm.getString("state").equals("NY") && curStruct.cust.equals(rstm.getString("cust"))){
+                                if(rstm.getString("state").equals("NJ") && curStruct.cust.equals(rstm.getString("cust"))){
                                     curStruct.sum_1_quant = curStruct.sum_1_quant == null ? rstm.getInt("quant") : curStruct.sum_1_quant+rstm.getInt("quant");
                                     curStruct.cnt_1_quant = curStruct.cnt_1_quant == null ? 1 : curStruct.cnt_1_quant + 1;
                                     curStruct.avg_1_quant = curStruct.sum_1_quant/curStruct.cnt_1_quant;

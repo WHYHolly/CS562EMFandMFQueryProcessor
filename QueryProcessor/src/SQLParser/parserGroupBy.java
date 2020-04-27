@@ -75,9 +75,9 @@ public class parserGroupBy extends partialParser{
                 + "And the list of variables: " + this.getParsedClause();
     
     }
-    public static void main(String[] args){
-        parserGroupBy parser = new parserGroupBy("cust, prod");
-        parser.parseClause();
-        System.out.println(parser);
-    }
+//    public static void main(String[] args){
+//        parserGroupBy parser = new parserGroupBy("cust, prod");
+//        parser.parseClause();
+//        System.out.println(parser);
+//    }
 }

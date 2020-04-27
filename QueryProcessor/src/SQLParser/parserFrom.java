@@ -36,7 +36,7 @@ public class parserFrom extends partialParser{
         try{
             conn = DriverManager.getConnection(URL, USER, PWD);
             ps = conn.prepareStatement("select * from Information_schema.columns where table_name = " + "\'" + sql.trim() + "\'"); 
-            System.out.println("select * from Information_schema.columns where table_name = " + "\'" + sql + "\'");
+//            System.out.println("select * from Information_schema.columns where table_name = " + "\'" + sql + "\'");
             rs = ps.executeQuery();
 
             while(rs.next()){

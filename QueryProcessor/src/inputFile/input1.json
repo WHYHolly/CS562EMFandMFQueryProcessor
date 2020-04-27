@@ -1,21 +1,26 @@
 {
-  "projAttrs": ["cust", "sum_0_quant", "sum_1_quant/sum_2_quant"],
+  "Opt": [
+    { "from": 1, "to": 2 },
+    { "from": 1, "to": 3 },
+    { "from": 2, "to": 3 }
+  ],
+  "projAttrs": ["cust", "sum_1_quant", "sum_2_quant", "sum_3_quant"],
   "gAttrs": 3,
   "aggFuncs": [
-    "sum_0_quant",
     "sum_1_quant",
+    "count_1_quant",
+    "avg_1_quant",
     "sum_2_quant",
     "count_2_quant",
     "avg_2_quant",
-    "sum_3_quant",
-    "count_3_quant",
-    "avg_3_quant"
+    "sum_3_quant"
   ],
   "numOfGVars": 3,
-  "condOfHaving": "if(curStruct.avg_3_quant>12)",
+  "condOfHaving": "if(curStruct.sum_1_quant>2*curStruct.sum_2_quant)",
   "condOfGVars": [
     "_",
-    "if(rstm.getString(\"cust\").compareTo(curStruct.cust) == 0&&rstm.getString(\"state\").compareTo(\"nj\") == 0)",
-    "if(rstm.getString(\"cust\").compareTo(curStruct.cust) == 0&&rstm.getString(\"state\").compareTo(\"nj\") == 0&&curStruct.avg_2_quant>20)"
+    "if(rstm.getString(\"state\").compareTo('NY') == 0&&rstm.getString(\"cust\").compareTo(curStruct.cust) == 0)",
+    "if(rstm.getString(\"state\").compareTo('NJ') == 0&&rstm.getString(\"cust\").compareTo(curStruct.cust) == 0&&rstm.getInt(\"quant\")==curStruct.avg_1_quant)",
+    "if(rstm.getString(\"state\").compareTo('CT') == 0&&rstm.getString(\"cust\").compareTo(curStruct.cust) == 0&&rstm.getInt(\"quant\")==curStruct.avg_1_quant&&rstm.getInt(\"quant\")==curStruct.avg_2_quant)"
   ]
 }

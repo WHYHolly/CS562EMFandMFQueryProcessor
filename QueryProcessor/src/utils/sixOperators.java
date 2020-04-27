@@ -10,6 +10,8 @@ package utils;
  * @author Holly
  */
 import java.util.*;
+import org.json.JSONArray;
+
 public class sixOperators{
     private List<String> projectedAttributes;
     private Integer numOfGVars;
@@ -17,6 +19,7 @@ public class sixOperators{
     private List<String> aggregateFuncs;
     private List<String> predicateOfGVars;
     private String predicateOfHaving; 
+    private JSONArray opt;
     public void setProjAttrs(List<String> list){
         this.projectedAttributes = list;
     }
@@ -35,6 +38,11 @@ public class sixOperators{
     public void setCondOfHaving(String having){
         this.predicateOfHaving = having;
     }
+    public void setOpt(JSONArray opt){
+        this.opt = opt;
+    }
+    
+    
     public List<String> getProjAttrs(){
         return this.projectedAttributes;
     }
@@ -53,12 +61,16 @@ public class sixOperators{
     public String getCondOfHaving(){
         return this.predicateOfHaving;
     }
+    public JSONArray getOpt(){
+        return this.opt;
+    }
     public String toString(){
         return "Projected Attributes: " + this.getProjAttrs() + "\n" +
                "Number of Grouping Vars: " + this.getNum() + "\n" +
                "Grouping Attrs: " + this.getGAttrs() + "\n" +
                "Agg Funstions: " + this.getAggFuncs() + "\n" +
-               "Conds of Vars" + this.getCondOfGVars() + "\n" +
-               "Having" + this.getCondOfHaving();
+               "Conds of Vars: " + this.getCondOfGVars() + "\n" +
+               "Having: " + this.getCondOfHaving() +
+                "Opt: " + this.getOpt();
     }
 }

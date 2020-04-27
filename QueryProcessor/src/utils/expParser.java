@@ -38,8 +38,8 @@ public class expParser{
                 if(para.contains(".")){
                     String[] arr = para.split("\\.");
 //                    System.out.println(arr[1]);
-                    System.out.println("Here the set is: " + aggFuncs);
-                    System.out.println(varToNum.indexOf(arr[0]) + 1);
+//                    System.out.println("Here the set is: " + aggFuncs);
+//                    System.out.println(varToNum.indexOf(arr[0]) + 1);
                     aggFuncs.add(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + arr[1]);
                     tempExp.push(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + arr[1]);
                 }else{
@@ -54,12 +54,12 @@ public class expParser{
         return stackToString(tempExp);
     }
     
-    public static String parserCond(String cond, Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
+    public static String parserCond(String cond, Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns, List<Integer> fromList){
         String temp = cond;
         for(String op: CONSTANTS.OP_LIST){
             temp = temp.replace(op, " " + op + " ");
         }
-        System.out.println("\\\\\\\\"+temp);
+//        System.out.println("\\\\\\\\"+temp);
         
 //        StringBuilder res = new StringBuilder();
         Stack<String> tempExp = new Stack();
@@ -81,9 +81,9 @@ public class expParser{
                 }
             }else{
                 if(!CONSTANTS.OP_LIST.contains(str)){
-                    if(NumberUtils.isParsable(str) || (str.startsWith("\"") && str.endsWith("\""))){
+                    if(NumberUtils.isParsable(str) || (str.startsWith("'") && str.endsWith("'"))){
                         tempExp.push(str);
-                        if(str.startsWith("\"") && str.endsWith("\"")){
+                        if(str.startsWith("'") && str.endsWith("'")){
                             StringCmb(tempExp);
                         }
                         
@@ -114,6 +114,9 @@ public class expParser{
                             String op = "";
                             if(strArr[i + 2].contains(".")){
                                 String[] para = strArr[i + 2].split("\\.");
+//                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
+//                                System.out.println(varToNum);
+                                fromList.add((varToNum.indexOf(para[0]) + 1));
                                 aggFuns.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + para[1]);
 //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
                                 if(!tempExp.isEmpty()){
@@ -122,6 +125,7 @@ public class expParser{
                                 tempExp.push("curStruct." + str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + para[1]);
                                 DBType = para[1];
                             }else{
+                                fromList.add(0);
                                 aggFuns.add(str+"_0_"+strArr[i + 2]);
                                 if(!tempExp.isEmpty()){
                                     op = tempExp.peek();
@@ -136,9 +140,9 @@ public class expParser{
                             i = i + 3;
                             
                         }else{
-                            System.out.println("Here in the parser");
-                            System.out.println(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String") + "______"+str);
-                            System.out.println( !tempExp.isEmpty() +"______"+tempExp.peek());
+//                            System.out.println("Here in the parser");
+//                            System.out.println(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String") + "______"+str);
+//                            System.out.println( !tempExp.isEmpty() +"______"+tempExp.peek());
                             if(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String") 
                                && !tempExp.isEmpty() && CONSTANTS.CMP_OP_LIST.contains(tempExp.peek())){
                                 tempExp.push("curStruct." + str);
@@ -161,6 +165,7 @@ public class expParser{
             String right = stack.pop();
             String op = stack.pop();
             String left = stack.pop();
+//            if()
             switch(op){
                 case "=":
                     stack.push(left + ".compareTo(" + right + ") == 0");

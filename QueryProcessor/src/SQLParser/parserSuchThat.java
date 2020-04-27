@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import utils.partialParser;
 import org.apache.commons.lang3.math.NumberUtils; 
 import utils.expParser;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -20,6 +22,7 @@ import utils.expParser;
 public class parserSuchThat extends partialParser{
 
     private List<String> condsList = new ArrayList<>();
+    private JSONArray graph = new JSONArray();
 
     parserSuchThat(){
         super("suchthat", null);
@@ -33,15 +36,36 @@ public class parserSuchThat extends partialParser{
     
     public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
         String[] gvConds = super.sql.split(",");
+        int to = 1;
+        
         for(String cond: gvConds){
 //            System.out.println("This condition:" + cond);
-            condsList.add(expParser.parserCond(cond.trim().toLowerCase(), attrToType, varToNum, aggFuns));
+            List<Integer> fromList = new ArrayList<>();
+            condsList.add(expParser.parserCond(cond.trim(), attrToType, varToNum, aggFuns, fromList));
+//            System.out.println("//////////the opt list is there:" + to + fromList);
+
+            for(int from: fromList){
+                JSONObject edge = new JSONObject();
+                try{
+                    edge.put("from", from);
+                    edge.put("to", to);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                System.out.println(edge);
+                graph.put(edge);
+            }
+            to++;
         }
     }
 
 //    @Override
     public List<String> getParsedClause(){
         return this.condsList;
+    }
+    
+    public JSONArray getGraph(){
+        return this.graph;
     }
     
     public String toString(){
