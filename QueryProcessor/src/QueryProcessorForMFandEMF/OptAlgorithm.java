@@ -12,6 +12,7 @@ package QueryProcessorForMFandEMF;
 import java.util.*;
 import java.io.*;
 import java.sql.*;
+import utils.PreReq;
 import QueryProcessorForMFandEMF.Parser;
 
 public class OptAlgorithm {
@@ -41,9 +42,9 @@ public class OptAlgorithm {
         while(!nextToPre.keySet().isEmpty() || count++ == 0){
             List<Integer> list = new ArrayList<>();
             for(int index = 0; index <= num; index++){
-                System.out.println(index);
+//                System.out.println(index);
                 if(!visited[index] && !nextToPre.containsKey(index)){
-                    System.out.println("Here is the inner: " + index);
+//                    System.out.println("Here is the inner: " + index);
                     list.add(index);
                     visited[index] = true;
                 }
@@ -65,25 +66,27 @@ public class OptAlgorithm {
         
         cnt = order.size();
         this.order = order;
+        System.out.println(cnt);
+        System.out.println(order);
 //        return order;
     }
     
-    public static void main(String[] args){
-        OptAlgorithm thing = new OptAlgorithm();
-        List<PreReq> list = new ArrayList<>();
-//        list.add(new PreReq(1,2));
-        thing.topoSort(4, list);
-        System.out.println(thing.order);
-        System.out.println(thing.cnt);
-    
-    }
+//    public static void main(String[] args){
+//        OptAlgorithm thing = new OptAlgorithm();
+//        List<PreReq> list = new ArrayList<>();
+////        list.add(new PreReq(1,2));
+//        thing.topoSort(4, list);
+//        System.out.println(thing.order);
+//        System.out.println(thing.cnt);
+//    
+//    }
 }
 
-class PreReq{
-    int from;
-    int to;
-    PreReq(int from, int to){
-        this.from = from;
-        this.to = to;
-    }
-}
+//class PreReq{
+//    int from;
+//    int to;
+//    PreReq(int from, int to){
+//        this.from = from;
+//        this.to = to;
+//    }
+//}

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package QueryProcessorForMFandEMF;
-
+//package utils;
 /**
  *
  * @author Hangyu Wang
@@ -12,30 +12,35 @@ package QueryProcessorForMFandEMF;
 import java.util.*;
 import java.io.*;
 import java.sql.*;
+
+import utils.PreReq;
 import QueryProcessorForMFandEMF.Parser;
 import QueryProcessorForMFandEMF.OptAlgorithm;
+
+import utils.Group;
+import utils.CONSTANTS;
 public class Processor {
     private final static int SELECTATTRIBUTE = 0, NUMOFGV = 1, GATTR = 2,
             FVECT = 3, SELECTCONDVECT = 4, HAVINGCOND = 5;
     private static final String USER ="postgres";
     private static final String PWD ="m8kimmWhyholly";
     private static final String URL ="jdbc:postgresql://localhost:5432/postgres";
-    private OptAlgorithm opt;
+    private OptAlgorithm opt = new OptAlgorithm();
     private PreparedStatement ps = null;
     private Connection conn = null;
     private ResultSet rs = null;
     
     private static Map<String, String> nameToType = new HashMap<>();
-    private static Map<String, String> dbTypeToJavaType = new HashMap<String, String>() {{
-        put("character varying", "String");
-        put("character", "String");
-        put("integer", "Integer");
-    }};
-    private final static Map<String, String> typeToInitVal = new HashMap<String, String>() {{
-        put("character varying", " = \"\"");
-        put("character", " = \"\"");
-        put("integer", " = null");
-    }};
+//    private static Map<String, String> dbTypeToJavaType = new HashMap<String, String>() {{
+//        put("character varying", "String");
+//        put("character", "String");
+//        put("integer", "Integer");
+//    }};
+//    private final static Map<String, String> typeToInitVal = new HashMap<String, String>() {{
+//        put("character varying", " = \"\"");
+//        put("character", " = \"\"");
+//        put("integer", " = null");
+//    }};
     private final static String SPACE = " ";
     
     private PhiStruct oneStruct;
@@ -122,8 +127,10 @@ public class Processor {
         System.out.println(aggregateFuncs);
         System.out.println(predicateOfGVars);
         System.out.println(predicateOfHaving);
+        
         List<PreReq> list = new ArrayList<>();
-//        opt.topoSort(numOfGVars, list);
+        list.add(new PreReq(1, 2));
+        opt.topoSort(numOfGVars, list);
         
         oneStruct = new PhiStruct(  projectedAttributes, 
                                     numOfGVars, 
@@ -141,7 +148,7 @@ public class Processor {
         try{
             for(String attr: oneStruct.getG_ATTR()){
                 String originType = nameToType.get(attr);
-                String typeTemp = dbTypeToJavaType.get(originType);
+                String typeTemp = CONSTANTS.dbTypeToJavaType.get(originType);
 //                String typeTemp = nameToType.get(attr);
                 bw.write(Tab(2) + typeTemp + " " + attr +";");
                 bw.newLine();
@@ -153,7 +160,7 @@ public class Processor {
             for(Group body: oneStruct.getAggFunc()){
                 String attr = body.aggType + "_" + body.sub + "_" + body.attr;
                 String originType = nameToType.get(body.attr);
-                String typeTemp = dbTypeToJavaType.get(originType);
+                String typeTemp = CONSTANTS.dbTypeToJavaType.get(originType);
 //                System.out.println(originType+"=>"+typeTemp);
                 bw.write(Tab(2) + typeTemp + " " + attr +";");
                 bw.newLine();
@@ -171,7 +178,7 @@ public class Processor {
             for(int i = 0; i < name.size(); i++){
 //                System.out.println(type.get(i));
 //                System.out.println(name.get(i) + typeToInitVal.get(type.get(i)) + ";");
-                bw.write(Tab(4) + name.get(i) + typeToInitVal.get(type.get(i)) + ";");
+                bw.write(Tab(4) + name.get(i) + CONSTANTS.typeToInitVal.get(type.get(i)) + ";");
 //                bw.flush();
                 bw.newLine();
                 bw.flush();
@@ -201,7 +208,7 @@ public class Processor {
     //        String key = "" + rstm.getString("prod") + rs.getInt("month");
             String st = "String key = \"\" ";
             for(String attr: g_Attrs){
-                String type = dbTypeToJavaType.get(nameToType.get(attr));
+                String type = CONSTANTS.dbTypeToJavaType.get(nameToType.get(attr));
                 type = type.equals("String") ? "String": "Int";
                 st += "+ rstm.get" + type + "(\"" + attr + "\")";
             }
@@ -209,7 +216,7 @@ public class Processor {
             bw.newLine();
             writeFromSample(91, 92);
             for(String attr: g_Attrs){
-                String type = dbTypeToJavaType.get(nameToType.get(attr));
+                String type = CONSTANTS.dbTypeToJavaType.get(nameToType.get(attr));
                 type = type.equals("String") ? "String": "Int";
 //                st += "+ rstm.get" + type + "(\"" + attr + "\")";
                 String defSt = "newStrcut.";
@@ -240,79 +247,85 @@ public class Processor {
             bw.write("///////////////Other Scan////////////");
             bw.flush();
             bw.newLine();
-            bw.write(Tab(3) + "int count = " + oneStruct.getNumOfGV()+";");
+            bw.write(Tab(3) + "int count = " + opt.cnt +";");
+//            bw.write(Tab(3) + "int count = " + oneStruct.getNumOfGV()+";");
             bw.newLine();
             writeFromSample(101, 106);
             
-            
-            
-            Iterator<String> iter = oneStruct.getCond_GV().iterator();
-            iter.next();
-            int count = 1;
-            while(iter.hasNext()){
+
+            Iterator<List<Integer>> iter = opt.order.iterator();
+            List<String> cond_Gv = oneStruct.getCond_GV();
+//            iter.next();
+            int count = 0;
+//            int count 
+            while(count  < opt.cnt){
 //                case
 //                System.out.println("Here is the condition: " + iter.next());
-                bw.write(Tab(7) +"case " + count + ":");
+                bw.write(Tab(7) +"case " + (count + 1) + ":");
                 bw.newLine();
-                bw.write(Tab(8) +iter.next() + "{");
-                bw.newLine();
-                for(Group aF: oneStruct.getAggFunc()){
-//                    System.out.println(aF.aggType + aF.attr + aF.sub);
-                    String curType = aF.aggType;
-                    String curAttr = aF.attr;
-                    String curSub = aF.sub;
-                    String codes = "";
-                    String tempStr = "";
-                    if(Integer.parseInt(curSub) == count){
-                        switch(curType){
-                            case "sum":
-                                tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
-                                codes = tempStr + " = " + tempStr+ " == null ? "
-                                        + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
-                                        + " : " + tempStr + '+'
-                                        + "rstm.getInt(" + "\"" + curAttr + "\"" +");";
-                            break;
-                            case "cnt":
-                                tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
-                                codes = tempStr + " = " + tempStr + " == null ? "
-                                        + "1"
-                                        + " : " + tempStr
-                                        + " + 1;";
-                            break;
-                            case "max":
-                                tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
-                                codes = tempStr + " = " + tempStr + " == null ? "
-                                        + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
-                                        + " : (" + tempStr + " > "
-                                        + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
-                                        +" ? "+ tempStr+" : " + "rstm.getInt(" + "\"" + curAttr + "\"" +")" +");";
-                            break;
-                            case "min":
-                                tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
-                                codes = tempStr + " = " + tempStr + " == null ? "
-                                        + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
-                                        + " : (" + tempStr + " < "
-                                        + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
-                                        +" ? "+ tempStr+" : " + "rstm.getInt(" + "\"" + curAttr + "\"" +")" +");";
-                            break;
-                            case "avg":
-                                tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
-                                codes = tempStr + " = " + "curStruct." + "sum" + "_" + curSub + "_" + curAttr
-                                        + "/" 
-                                        + "curStruct." + "cnt" + "_" + curSub + "_" + curAttr + ";";
-                                
-                            break;
+                List<Integer> preList = iter.next();
+                for(int val: preList){
+                    bw.write(Tab(8) + cond_Gv.get(val) + "{");
+                    bw.newLine();
+                    for(Group aF: oneStruct.getAggFunc()){
+    //                    System.out.println(aF.aggType + aF.attr + aF.sub);
+                        String curType = aF.aggType;
+                        String curAttr = aF.attr;
+                        String curSub = aF.sub;
+                        String codes = "";
+                        String tempStr = "";
+                        if(Integer.parseInt(curSub) == val){
+                            switch(curType){
+                                case "sum":
+                                    tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                                    codes = tempStr + " = " + tempStr+ " == null ? "
+                                            + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                            + " : " + tempStr + '+'
+                                            + "rstm.getInt(" + "\"" + curAttr + "\"" +");";
+                                break;
+                                case "cnt":
+                                    tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                                    codes = tempStr + " = " + tempStr + " == null ? "
+                                            + "1"
+                                            + " : " + tempStr
+                                            + " + 1;";
+                                break;
+                                case "max":
+                                    tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                                    codes = tempStr + " = " + tempStr + " == null ? "
+                                            + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                            + " : (" + tempStr + " > "
+                                            + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                            +" ? "+ tempStr+" : " + "rstm.getInt(" + "\"" + curAttr + "\"" +")" +");";
+                                break;
+                                case "min":
+                                    tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                                    codes = tempStr + " = " + tempStr + " == null ? "
+                                            + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                            + " : (" + tempStr + " < "
+                                            + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                            +" ? "+ tempStr+" : " + "rstm.getInt(" + "\"" + curAttr + "\"" +")" +");";
+                                break;
+                                case "avg":
+                                    tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                                    codes = tempStr + " = " + "curStruct." + "sum" + "_" + curSub + "_" + curAttr
+                                            + "/" 
+                                            + "curStruct." + "cnt" + "_" + curSub + "_" + curAttr + ";";
+
+                                break;
+                            }
+
+                        }else{
+                            continue;
                         }
-                        
-                    }else{
-                        continue;
+                        bw.write(Tab(9) + codes);
+                        bw.newLine();
                     }
-                    bw.write(Tab(9) + codes);
+                    bw.write(Tab(8) + "}");
                     bw.newLine();
                 }
                 
-                bw.write(Tab(8) + "}");
-                bw.newLine();
+                
                 bw.write(Tab(7) + "break;");
                 
                 bw.newLine();
@@ -439,6 +452,5 @@ public class Processor {
         p.otherScans();
         p.printResult();
             
-        
     }
 }

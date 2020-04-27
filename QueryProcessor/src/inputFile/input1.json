@@ -1,0 +1,21 @@
+{
+  "projAttrs": ["cust", "sum_0_quant", "sum_1_quant/sum_2_quant"],
+  "gAttrs": 3,
+  "aggFuncs": [
+    "sum_0_quant",
+    "sum_1_quant",
+    "sum_2_quant",
+    "count_2_quant",
+    "avg_2_quant",
+    "sum_3_quant",
+    "count_3_quant",
+    "avg_3_quant"
+  ],
+  "numOfGVars": 3,
+  "condOfHaving": "if(curStruct.avg_3_quant>12)",
+  "condOfGVars": [
+    "_",
+    "if(rstm.getString(\"cust\").compareTo(curStruct.cust) == 0&&rstm.getString(\"state\").compareTo(\"nj\") == 0)",
+    "if(rstm.getString(\"cust\").compareTo(curStruct.cust) == 0&&rstm.getString(\"state\").compareTo(\"nj\") == 0&&curStruct.avg_2_quant>20)"
+  ]
+}

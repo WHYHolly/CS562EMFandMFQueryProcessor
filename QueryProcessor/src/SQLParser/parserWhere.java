@@ -1,0 +1,40 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package SQLParser;
+
+import java.util.*;
+
+import utils.partialParser;
+import utils.expParser;
+
+/**
+ *
+ * @author Holly
+ */
+public class parserWhere extends partialParser{
+    private List<String> parsedSql = new ArrayList<>();
+    parserWhere(){
+        super("where", null);
+    }
+    parserWhere(String sql){
+        super("where", sql);
+    }
+    public void setSql(String sql){
+        super.sql = sql;
+    }
+//    @Override
+    public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
+        if(sql != null && sql.length() != 0){
+            
+            this.parsedSql.add(expParser.parserCond(sql.trim().toLowerCase(), attrToType, varToNum, aggFuns));
+        }
+    }
+//    @Override
+    public List<String> getParsedClause(){
+        return this.parsedSql;
+    }
+    
+}

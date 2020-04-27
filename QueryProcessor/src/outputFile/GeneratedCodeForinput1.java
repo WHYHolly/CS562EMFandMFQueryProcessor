@@ -114,7 +114,7 @@ public class GeneratedCodeForinput1{
                 more = rstm.next();
             }
 ///////////////Other Scan////////////
-            int count = 3;
+            int count = 2;
             for(int i = 1; i <= count; i++){
                 for(MFStruct curStruct: structList){
                     rstm = pstm.executeQuery(); 
@@ -127,17 +127,15 @@ public class GeneratedCodeForinput1{
                                     curStruct.cnt_1_quant = curStruct.cnt_1_quant == null ? 1 : curStruct.cnt_1_quant + 1;
                                     curStruct.avg_1_quant = curStruct.sum_1_quant/curStruct.cnt_1_quant;
                                 }
-                            break;
-                            case 2:
-                                if(rstm.getString("state").equals("NJ") && curStruct.cust.equals(rstm.getString("cust"))){
-                                    curStruct.sum_2_quant = curStruct.sum_2_quant == null ? rstm.getInt("quant") : curStruct.sum_2_quant+rstm.getInt("quant");
-                                }
-                            break;
-                            case 3:
                                 if(rstm.getString("state").equals("CT") && curStruct.cust.equals(rstm.getString("cust"))){
                                     curStruct.sum_3_quant = curStruct.sum_3_quant == null ? rstm.getInt("quant") : curStruct.sum_3_quant+rstm.getInt("quant");
                                     curStruct.cnt_3_quant = curStruct.cnt_3_quant == null ? 1 : curStruct.cnt_3_quant + 1;
                                     curStruct.avg_3_quant = curStruct.sum_3_quant/curStruct.cnt_3_quant;
+                                }
+                            break;
+                            case 2:
+                                if(rstm.getString("state").equals("NJ") && curStruct.cust.equals(rstm.getString("cust"))){
+                                    curStruct.sum_2_quant = curStruct.sum_2_quant == null ? rstm.getInt("quant") : curStruct.sum_2_quant+rstm.getInt("quant");
                                 }
                             break;
                         }

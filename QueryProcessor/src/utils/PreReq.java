@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package QueryProcessorForMFandEMF;
+package utils;
 
 /**
  *
- * @author Hangyu Wang
+ * @author Holly
  */
-import java.util.*;
-import java.io.*;
-import java.sql.*;
-import QueryProcessorForMFandEMF.Parser;
-public class SQLParser {
-    
+public class PreReq{
+    public int from;
+    public int to;
+    public PreReq(int from, int to){
+        this.from = from;
+        this.to = to;
+    }
 }

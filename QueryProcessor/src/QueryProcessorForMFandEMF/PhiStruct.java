@@ -10,6 +10,8 @@ package QueryProcessorForMFandEMF;
  * @author Hangyu Wang
  */
 import java.util.*;
+import utils.Group;
+
 public class PhiStruct {
     private List<String> projectedAttributes;
     private Integer numOfGVars;
@@ -49,17 +51,5 @@ public class PhiStruct {
     }
     public String getCond_Having(){
         return predicateOfHaving;
-    }
-}
-
-class Group{
-    public String sub;
-    public String aggType;
-    public String attr;
-    
-    public Group(String sub, String aggType, String attr){
-        this.sub = sub;
-        this.aggType = aggType;
-        this.attr = attr;
     }
 }
