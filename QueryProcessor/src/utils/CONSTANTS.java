@@ -18,16 +18,28 @@ public class CONSTANTS{
         put("character varying", "String");
         put("character", "String");
         put("integer", "Integer");
+        put("bigint", "Long");
+        put("numeric", "Double");
     }};
     public static final Map<String, String> typeToInitVal = new HashMap<String, String>() {{
         put("character varying", " = \"\"");
         put("character", " = \"\"");
         put("integer", " = null");
+        put("bigint", " = null");
+        put("numeric", " = null");
     }};
     
     public static final List<String> PQ_AGG_FUNCS = new ArrayList<String>() {{
         add("sum"); add("count"); add("max");
         add("min");add("avg");
+    }};
+    
+    public static final Map<String, String> AGG_FUNCS_TO_TYPE = new HashMap<String, String>() {{
+        put("sum", "bigint"); 
+        put("count", "bigint"); 
+        put("max", "integer");
+        put("min", "integer");
+        put("avg", "numeric");
     }};
     
     public static final List<String> OP_LIST = new ArrayList<String>() {{

@@ -23,14 +23,13 @@ import java.sql.*;
 
 import java.nio.charset.StandardCharsets;
 
-
 import utils.*;
 
 public class SQLParser {
     private String sql;
-    String USER ="postgres";
-    String PWD ="m8kimmWhyholly";
-    String URL ="jdbc:postgresql://localhost:5432/postgres";
+    String USER;
+    String PWD;
+    String URL;
     private Pattern p = Pattern.compile("select\\s+(?<select>(.|\\n)*)"
                                         + "(from\\s+(?<from>((?!(where|group by|such that|having)).|\\n)*))"
                                         + "(where\\s+(?<where>((?!(group by|such that|having)).|\\n)*))?"
@@ -53,8 +52,11 @@ public class SQLParser {
 //    private Map<String, String> nameToType = new HashMap<>();
     private sixOperators sixOps;
     private Matcher m = null;
-    public SQLParser(String sql){
-        this.sql = sql;
+    public SQLParser(String USER, String PWD, String URL){
+//        this.sql = sql;
+        this.USER = USER;
+        this.PWD = PWD;
+        this.URL = URL;
     }
     void generalParser(){
         this.m = p.matcher(this.sql);
@@ -63,7 +65,11 @@ public class SQLParser {
             for(String g: groupName){
 //                System.out.println(g + ":\n" + m.group(g));
                 if(m.group(g) != null){
+                    System.out.println("////////////////////////");
+                    System.out.println(g);
+                    System.out.println(m.group(g));
                     clauseToParser.get(g).setSql(m.group(g));
+                    System.out.println("////////////////////////");
                 }
             }
         }
@@ -100,8 +106,10 @@ public class SQLParser {
                     sixOps.setProjAttrs((List<String>) clauseToParser.get("select").getParsedClause());
                     break;
                 case "where":{
-                    clauseToParser.get("where").parseClause(nameToType, varToNum);
+                    clauseToParser.get("where").parseClause(nameToType, varToNum, aggFuns);
+                    System.out.println("Here is the where!!!" + clauseToParser.get("where").getParsedClause());
                     List<String> tempList = (List<String>) clauseToParser.get("where").getParsedClause();
+                    System.out.println(tempList);
                     if(tempList.size() == 0){
                         List<String> conds = new ArrayList<>();
                         conds.add("_");
@@ -144,42 +152,51 @@ public class SQLParser {
         try{
             j.put("projAttrs", this.getSixOps().getProjAttrs().toArray());
             j.put("numOfGVars", this.getSixOps().getNum());
-            j.put("gAttrs", this.getSixOps().getNum());
+            j.put("gAttrs", this.getSixOps().getGAttrs() == null
+                                                        ? "":  this.getSixOps().getGAttrs());
             j.put("aggFuncs", this.getSixOps().getAggFuncs());
             j.put("condOfGVars", this.getSixOps().getCondOfGVars());
             j.put("condOfHaving", this.getSixOps().getCondOfHaving());
-            j.put("Opt", this.getSixOps().getOpt());
+            System.out.println(this.getSixOps().getOpt());
+            j.put("Opt", this.getSixOps().getOpt() == null
+                                                ? new ArrayList<>()
+                                                : this.getSixOps().getOpt());
+//            System.out.println(j);
         }catch(Exception e){
             System.out.println("Something wrong when you JSON IT!");
         }
 
         return j;
     }
-
     
-    public static void main(String[] args){
-
-        String file = "input1.json";
-        File inputSQl = new File("./src/SQLFile/sql1.sql");
-       
-        
+    public void performSQLParser(String fromFile, String toFile){
+        File inputSQl = new File("./src/inputFile/" + fromFile);
         try{
             String sql = FileUtils.readFileToString(inputSQl, StandardCharsets.UTF_8);
-//            System.out.println("Here is the SQL;///////////////");
-//            System.out.println(sql);
-            File newfile = new File("./src/inputFile/" + file);
-            FileWriter p = new FileWriter("./src/inputFile/" + file);
-            SQLParser sqlP = new SQLParser(sql);
-            sqlP.generalParser();
-            sqlP.initParser();
-            p.write(sqlP.getJSONFormat().toString());
+
+            File newfile = new File("./src/inputFile/" + toFile);
+            FileWriter p = new FileWriter("./src/inputFile/" + toFile);
+            this.sql = sql;
+            this.generalParser();
+            this.initParser();
+            p.write(this.getJSONFormat().toString());
             p.flush();
-            System.out.println(sqlP.getJSONFormat().toString());
+            System.out.println(this.getJSONFormat().toString());
 
         }catch(Exception e){
-            System.out.println("Something wrong with the SQL parser!");
+            System.out.println("Your SQL CANNOT be parsed. Please make sure you enter the right EMF SQL!\nAnd in the right location!");
             e.printStackTrace();
         }
+    
+    }
+    
+    public static void main(String[] args){
+        String USER ="postgres";
+        String PWD ="m8kimmWhyholly";
+        String URL ="jdbc:postgresql://localhost:5432/postgres";
+        
+        SQLParser pTest = new SQLParser(USER, PWD, URL);
+        pTest.performSQLParser("sql1.sql", "input1.json");
     }
 }
 

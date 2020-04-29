@@ -29,7 +29,7 @@ public class parserSelect extends partialParser{
     public void parseClause(List<String> varToNum, Set<String> aggFuncs){
         for(String str: sql.split(",")){
 //            System.out.println(aggFuncs.size());
-            attrs.add(expParser.parserAttr(str.trim(),varToNum, aggFuncs));
+            attrs.add(expParser.parserAttr(str.trim(), varToNum, aggFuncs));
         }
     }
 //    @Override

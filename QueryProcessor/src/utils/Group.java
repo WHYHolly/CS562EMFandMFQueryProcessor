@@ -23,4 +23,8 @@ public class Group{
     public Group(String attr){
         this(null, null, attr);
     }
+    
+    public String toString(){
+        return this.aggType + "_" + this.sub + "_" + this.attr;
+    }
 }

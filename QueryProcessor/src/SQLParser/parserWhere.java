@@ -23,13 +23,18 @@ public class parserWhere extends partialParser{
         super("where", sql);
     }
     public void setSql(String sql){
+        System.out.println("WHERE");
+        System.out.println(sql);
         super.sql = sql;
     }
 //    @Override
     public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
+        System.out.println("WHERE");
+        System.out.println(sql);
         if(sql != null && sql.length() != 0){
-            
-            this.parsedSql.add(expParser.parserCond(sql.trim(), attrToType, varToNum, aggFuns, new ArrayList<>()));
+            System.out.println("WHERE");
+            System.out.println(sql);
+            this.parsedSql.add(expParser.parserCondWhere(sql.trim(), attrToType));
         }
     }
 //    @Override

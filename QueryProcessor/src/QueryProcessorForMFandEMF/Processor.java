@@ -9,6 +9,10 @@ package QueryProcessorForMFandEMF;
  *
  * @author Hangyu Wang
  */
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.apache.commons.io.FileUtils;
+
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -16,130 +20,114 @@ import java.sql.*;
 import utils.PreReq;
 import QueryProcessorForMFandEMF.Parser;
 import QueryProcessorForMFandEMF.OptAlgorithm;
+import SQLParser.SQLParser;
+import java.nio.charset.StandardCharsets;
 
 import utils.Group;
 import utils.CONSTANTS;
+import utils.CONSTANTS;
 public class Processor {
-    private final static int SELECTATTRIBUTE = 0, NUMOFGV = 1, GATTR = 2,
-            FVECT = 3, SELECTCONDVECT = 4, HAVINGCOND = 5;
-    private static final String USER ="postgres";
-    private static final String PWD ="m8kimmWhyholly";
-    private static final String URL ="jdbc:postgresql://localhost:5432/postgres";
+
+    private static String USER;
+    private static String PWD;
+    private static String URL;
+    private final static String SPACE = " ";
+    
+    private static String outputFile = "";
+    
     private OptAlgorithm opt = new OptAlgorithm();
     private PreparedStatement ps = null;
     private Connection conn = null;
     private ResultSet rs = null;
     
     private static Map<String, String> nameToType = new HashMap<>();
-//    private static Map<String, String> dbTypeToJavaType = new HashMap<String, String>() {{
-//        put("character varying", "String");
-//        put("character", "String");
-//        put("integer", "Integer");
-//    }};
-//    private final static Map<String, String> typeToInitVal = new HashMap<String, String>() {{
-//        put("character varying", " = \"\"");
-//        put("character", " = \"\"");
-//        put("integer", " = null");
-//    }};
-    private final static String SPACE = " ";
+
+    
     
     private PhiStruct oneStruct;
-//    private File file;
+
     private static String outputPath;
-    private static final String samplePath = "./src/QueryProcessorForMFandEMF/codeSample.java";
+
+    private static final String samplePath = "./src/utils/codeSample.txt";
     File sampleFile;
     FileWriter fw;
     BufferedWriter bw;
+    
+    public Processor(){
+        this("postgres", "m8kimmWhyholly", "jdbc:postgresql://localhost:5432/postgres");
+    }
+    public Processor(String USER, String PWD, String URL){
+        this.USER = USER;
+        this.PWD = PWD;
+        this.URL = URL;
+    }
 
-    public void readInput(String path, String fileName){
-        String tempOutPath = "./src/outputFile/GeneratedCodeFor" + fileName;
-        this.outputPath = (tempOutPath.substring(0, tempOutPath.length() - 3) + "java");
-        Scanner s = null;
-        int status = 0;
+    public void readInput(String fileName){
         try{
-            s = new Scanner(new BufferedReader(new FileReader(path + fileName)));
-        }catch(Exception  e){
+            if(fileName.endsWith("json")){
+                this.readInputFromJSON(fileName);
+                this.outputFile = fileName.substring(0, fileName.length() - 5);
+            }else if(fileName.endsWith("sql")){
+                SQLParser sqlParser = new SQLParser(USER, PWD, URL);
+                String jsonFileName = fileName.substring(0, fileName.length() - 3) + "json";
+                this.outputFile = fileName.substring(0, fileName.length() - 4);
+                sqlParser.performSQLParser(fileName, jsonFileName);
+                this.readInputFromJSON(jsonFileName);
+            }
+        }catch(Exception e){
             e.printStackTrace();
         }
-        s.nextLine();
-        List<String> projectedAttributes = new ArrayList<>();
-        Integer numOfGVars = null;
-        List<String> gAttributes = new ArrayList<>();
-        List<String> aggregateFuncs = new ArrayList<>();
-        List<String> predicateOfGVars = new ArrayList<>();
-        String predicateOfHaving = new String(); 
-        while(s.hasNextLine()){
-            if(!s.hasNext()){
-                break;
-            }
-            //Check status, make sure the reading content
-            String line = s.nextLine();
-            if(line.startsWith("SELECT ATTRIBUTE(S)")){
-                status = SELECTATTRIBUTE;
-            }else if(line.startsWith("NUMBER OF GROUPING VARIABLES(n)")){
-                status = NUMOFGV;
-            }else if(line.startsWith("GROUPING ATTRIBUTES(V)")){
-                status = GATTR;
-            }else if(line.startsWith("F-VECT([F])")){
-                status = FVECT;
-            }else if(line.startsWith("SELECT CONDITION-VECT([σ])")){
-                status = SELECTCONDVECT;
-            }else if(line.startsWith("HAVING_CONDITION(G)")){
-                status = HAVINGCOND;
-            }else{
-                String[] tempArr;
-                switch(status){
-                    case SELECTATTRIBUTE:
-                        tempArr = line.split(",");
-                        for(String str: tempArr)
-                            projectedAttributes.add(str.trim());
-                        break;
-                    case NUMOFGV:
-                        numOfGVars = Integer.parseInt(line);
-                        break;
-                    case GATTR:
-                        tempArr = line.split(",");
-                        for(String str: tempArr)
-                            gAttributes.add(str.trim());
-//                        gAttributes = Arrays.asList(line.split(","));
-                        break;
-                    case FVECT:
-                        tempArr = line.split(",");
-                        for(String str: tempArr)
-                            aggregateFuncs.add(str.trim());
-//                        aggregateFuncs = Arrays.asList(line.split(","));
-                        break;
-                    case SELECTCONDVECT:
-                        predicateOfGVars.add(line);
-                        break;
-                    case HAVINGCOND:
-                        predicateOfHaving = line;
-                        break;
-                }
-            }
-        
-        
-        }
-        
-        System.out.println(projectedAttributes);
-        System.out.println(numOfGVars);
-        System.out.println(gAttributes);
-        System.out.println(aggregateFuncs);
-        System.out.println(predicateOfGVars);
-        System.out.println(predicateOfHaving);
-        
-        List<PreReq> list = new ArrayList<>();
-        list.add(new PreReq(1, 2));
-        opt.topoSort(numOfGVars, list);
-        
-        oneStruct = new PhiStruct(  projectedAttributes, 
-                                    numOfGVars, 
-                                    gAttributes,
-                                    aggregateFuncs, 
-                                    predicateOfGVars, 
-                                    predicateOfHaving);
+    }
+    
+    public void readInputFromJSON(String fileName){
+        String tempOutPath = "./src/outputFile/GeneratedCodeFor" + fileName;
+        this.outputPath = (tempOutPath.substring(0, tempOutPath.length() - 4) + "java");
+//        File inputSQl = new File("./src/SQLFile/sql1.sql");
+        File inputJSON = new File("./src/inputFile/" + fileName);
+        JSONObject j = null;
+        try{
+            String jStr = FileUtils.readFileToString(inputJSON, StandardCharsets.UTF_8);
+//            System.out.println(jStr);
+            j = new JSONObject(jStr);
 
-        
+            List<String> projectedAttributes = new ArrayList<>();
+            for(int i = 0; i < j.getJSONArray("projAttrs").length(); i++){
+                projectedAttributes.add(j.getJSONArray("projAttrs").getString(i));
+            }
+            Integer numOfGVars = (Integer) j.get("numOfGVars");
+            List<String> gAttributes = new ArrayList<>();
+            String gAttrStr = (String) j.get("gAttrs");
+//            gAttributes = Arrays.asList(gAttrStr.split(","));
+            for(String attr: gAttrStr.split(",")){
+                gAttributes.add(attr.trim());
+            }
+            
+            
+//            System.out.println("///////////");
+//            System.out.println(gAttributes);
+            List<String> aggregateFuncs = new ArrayList<>();
+            for(int i = 0; i < j.getJSONArray("aggFuncs").length(); i++){
+                aggregateFuncs.add(j.getJSONArray("aggFuncs").getString(i));
+            }
+            List<String> predicateOfGVars = new ArrayList<>();
+            for(int i = 0; i < j.getJSONArray("condOfGVars").length(); i++){
+                predicateOfGVars.add(j.getJSONArray("condOfGVars").getString(i));
+            }
+            String predicateOfHaving = (String) j.get("condOfHaving"); 
+            
+            oneStruct = new PhiStruct(  projectedAttributes, 
+                                        numOfGVars, 
+                                        gAttributes,
+                                        aggregateFuncs, 
+                                        predicateOfGVars, 
+                                        predicateOfHaving);
+
+            opt.topoSort(oneStruct.getNumOfGV(), j.getJSONArray("Opt"));
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return;
     }
     
     public void writeStruct(){
@@ -156,12 +144,12 @@ public class Processor {
                 type.add(originType);
             }
             bw.flush();
-            System.out.println("/////////////Here//////");
+
             for(Group body: oneStruct.getAggFunc()){
                 String attr = body.aggType + "_" + body.sub + "_" + body.attr;
-                String originType = nameToType.get(body.attr);
+                String originType = CONSTANTS.AGG_FUNCS_TO_TYPE.get(body.aggType);
                 String typeTemp = CONSTANTS.dbTypeToJavaType.get(originType);
-//                System.out.println(originType+"=>"+typeTemp);
+                System.out.println(originType+"=>"+typeTemp+"=>"+attr);
                 bw.write(Tab(2) + typeTemp + " " + attr +";");
                 bw.newLine();
                 name.add(attr);
@@ -172,14 +160,9 @@ public class Processor {
             bw.newLine();
             bw.newLine();
             bw.flush();
-//            System.out.println(name);
-//            System.out.println(name);
-//            System.out.println("///////////////////////");
+
             for(int i = 0; i < name.size(); i++){
-//                System.out.println(type.get(i));
-//                System.out.println(name.get(i) + typeToInitVal.get(type.get(i)) + ";");
                 bw.write(Tab(4) + name.get(i) + CONSTANTS.typeToInitVal.get(type.get(i)) + ";");
-//                bw.flush();
                 bw.newLine();
                 bw.flush();
             }
@@ -194,20 +177,33 @@ public class Processor {
     }
     
     public void writeDBConnetionSetup(){
-        writeFromSample(26, 71);
+        try{
+            bw.write(Tab(1) + "private static final String USER = \"" + this.USER + "\";\n");
+            bw.write(Tab(1) + "private static final String PWD = \"" + this.PWD + "\";\n");
+            bw.write(Tab(1) + "private static final String URL = \"" + this.URL + "\";\n");
+            writeFromSample(29, 36);
+            bw.write(Tab(2) + "GeneratedCodeFor" + this.outputFile +  " res = new " + "GeneratedCodeFor" + this.outputFile +"();\n");
+            writeFromSample(38, 71);
+        }catch(Exception e){
+            System.out.println("Here is the writeDBConnetionSetup ERROR");
+            e.printStackTrace();
+        }
     }
     //use for group by 
     public void firstScan(){
         try{
             List<String> g_Attrs = oneStruct.getG_ATTR();
+            System.out.println("in the first");
+            System.out.println(g_Attrs);
             writeFromSample(72, 88);
             String generalCond = oneStruct.getCond_GV().get(0);
             generalCond = generalCond.equals("") ? "true": generalCond;
-            bw.write(Tab(4) + "if(" + (generalCond.equals("_")? "true": generalCond) + ") {");
+            bw.write(Tab(4) + (generalCond.equals("_")? "if(true)": generalCond) + " {");
             bw.newLine();
     //        String key = "" + rstm.getString("prod") + rs.getInt("month");
             String st = "String key = \"\" ";
             for(String attr: g_Attrs){
+                System.out.println(attr+"////////////////");
                 String type = CONSTANTS.dbTypeToJavaType.get(nameToType.get(attr));
                 type = type.equals("String") ? "String": "Int";
                 st += "+ rstm.get" + type + "(\"" + attr + "\")";
@@ -227,6 +223,65 @@ public class Processor {
                 bw.flush();
             }
             writeFromSample(94, 96);
+            bw.write(Tab(5) + "MFStruct curStruct = structList.get(key);");
+            bw.newLine();
+            for(Group aF: oneStruct.getAggFunc()){
+                System.out.println(aF.aggType + aF.attr + aF.sub);
+                String curType = aF.aggType;
+                String curAttr = aF.attr;
+                String curSub = aF.sub;
+                String codes = "";
+                String tempStr = "";
+                if(Integer.parseInt(curSub) == 0){
+                    switch(curType){
+                        case "sum":
+                            tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                            codes = tempStr + " = " + tempStr+ " == null ? "
+                                    + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                    + " : " + tempStr + '+'
+                                    + "rstm.getInt(" + "\"" + curAttr + "\"" +");";
+                        break;
+                        case "count":
+                            tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                            codes = tempStr + " = " + tempStr + " == null ? "
+                                    + "1"
+                                    + " : " + tempStr
+                                    + " + 1;";
+                        break;
+                        case "max":
+                            tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                            codes = tempStr + " = " + tempStr + " == null ? "
+                                    + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                    + " : (" + tempStr + " > "
+                                    + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                    +" ? "+ tempStr+" : " + "rstm.getInt(" + "\"" + curAttr + "\"" +")" +");";
+                        break;
+                        case "min":
+                            tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                            codes = tempStr + " = " + tempStr + " == null ? "
+                                    + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                    + " : (" + tempStr + " < "
+                                    + "rstm.getInt(" + "\"" + curAttr + "\"" +")"
+                                    +" ? "+ tempStr+" : " + "rstm.getInt(" + "\"" + curAttr + "\"" +")" +");";
+                        break;
+                        case "avg":
+                            tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
+                            codes = tempStr + " = (" + "curStruct." + "sum" + "_" + curSub + "_" + curAttr + " + 0.0)"
+                                    + "/" 
+                                    + "curStruct." + "count" + "_" + curSub + "_" + curAttr + ";";
+
+                        break;
+                    }
+
+                }else{
+                    continue;
+                }
+                bw.write(Tab(5) + codes);
+                bw.newLine();
+            }
+            
+            
+            writeFromSample(98, 98);
             bw.write(Tab(4) + "}");
             bw.newLine();
             bw.write(Tab(4) + "more = rstm.next();");
@@ -238,6 +293,7 @@ public class Processor {
             
         }catch(Exception e){
             System.out.println("Here is the firstScan ERROR");
+            e.printStackTrace();
         }
 
     }
@@ -268,7 +324,7 @@ public class Processor {
                     bw.write(Tab(8) + cond_Gv.get(val) + "{");
                     bw.newLine();
                     for(Group aF: oneStruct.getAggFunc()){
-    //                    System.out.println(aF.aggType + aF.attr + aF.sub);
+                        System.out.println(aF.aggType + aF.attr + aF.sub);
                         String curType = aF.aggType;
                         String curAttr = aF.attr;
                         String curSub = aF.sub;
@@ -283,7 +339,7 @@ public class Processor {
                                             + " : " + tempStr + '+'
                                             + "rstm.getInt(" + "\"" + curAttr + "\"" +");";
                                 break;
-                                case "cnt":
+                                case "count":
                                     tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
                                     codes = tempStr + " = " + tempStr + " == null ? "
                                             + "1"
@@ -308,9 +364,9 @@ public class Processor {
                                 break;
                                 case "avg":
                                     tempStr = "curStruct." + curType + "_" + curSub + "_" + curAttr;
-                                    codes = tempStr + " = " + "curStruct." + "sum" + "_" + curSub + "_" + curAttr
+                                    codes = tempStr + " = (" + "curStruct." + "sum" + "_" + curSub + "_" + curAttr + " + 0.0)"
                                             + "/" 
-                                            + "curStruct." + "cnt" + "_" + curSub + "_" + curAttr + ";";
+                                            + "curStruct." + "count" + "_" + curSub + "_" + curAttr + ";";
 
                                 break;
                             }
@@ -335,7 +391,8 @@ public class Processor {
             bw.newLine();
             
         }catch(Exception e){
-            System.out.println("Here is the firstScan ERROR");
+            System.out.println("Here is the other Scans ERROR");
+            e.printStackTrace();
         }
     }
     
@@ -345,23 +402,58 @@ public class Processor {
             final int len = oneStruct.getProjATTR().size();
             for(int i = 0; i < len; i++){
                 if(i == len - 1){
-                    writeCode(Tab(3) + "System.out.printf(\"%-7s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                    if(oneStruct.getProjATTR().get(i).startsWith("avg")){
+                        writeCode(Tab(3) + "System.out.printf(\"%-18s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                    }else if(oneStruct.getProjATTR().get(i).startsWith("count") 
+                            || oneStruct.getProjATTR().get(i).startsWith("min")
+                            || oneStruct.getProjATTR().get(i).startsWith("max")
+                            || oneStruct.getProjATTR().get(i).startsWith("sum")){
+                        writeCode(Tab(3) + "System.out.printf(\"%-12s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                    }else{
+                        writeCode(Tab(3) + "System.out.printf(\"%-7s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                    }
                     break;
                 }
-                writeCode(Tab(3) + "System.out.printf(\"%-7s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                if(oneStruct.getProjATTR().get(i).startsWith("avg")){
+                    writeCode(Tab(3) + "System.out.printf(\"%-18s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                }else if(oneStruct.getProjATTR().get(i).startsWith("count") 
+                            || oneStruct.getProjATTR().get(i).startsWith("min")
+                            || oneStruct.getProjATTR().get(i).startsWith("max")
+                            || oneStruct.getProjATTR().get(i).startsWith("sum")){
+                    writeCode(Tab(3) + "System.out.printf(\"%-12s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                }else{
+                    writeCode(Tab(3) + "System.out.printf(\"%-7s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                }
+                
             }
             writeFromSample(114, 115);
 
-            bw.write(Tab(4) + oneStruct.getCond_Having() + "{");
+            bw.write(Tab(4) + (oneStruct.getCond_Having().equals("_")
+                                            ? "if(true)"
+                                            : oneStruct.getCond_Having()) 
+                    + "{");
             bw.newLine();
-            for(String attr: oneStruct.getProjATTR())
-                writeCode(Tab(5) + "System.out.printf(\"%-7s  \", " + Parser.projAttrs(attr) + ");");
+            for(String attr: oneStruct.getProjATTR()){
+                System.out.println("/////////");
+                System.out.println(attr);
+                if(attr.startsWith("avg")){
+                    writeCode(Tab(5) + "System.out.printf(\"%-18s  \", " + Parser.projAttrs(attr) + ");");
+                }else if(attr.startsWith("count") 
+                        || attr.startsWith("max")
+                        || attr.startsWith("min") 
+                        || attr.startsWith("sum")){
+                    writeCode(Tab(5) + "System.out.printf(\"%-12s  \", " + Parser.projAttrs(attr) + ");");
+                }else{
+                    writeCode(Tab(5) + "System.out.printf(\"%-7s  \", " + Parser.projAttrs(attr) + ");");
+                }
+            }
             bw.write(Tab(5) + "System.out.println();\n");
             bw.write(Tab(4) + "}");
             bw.newLine();
             writeFromSample(117, 128);
         }catch(Exception e){
-            System.out.println("Here is the firstScan ERROR");
+            System.out.println("Here is the printResult ERROR");
+            e.printStackTrace();
         }
 
     }
@@ -372,7 +464,7 @@ public class Processor {
             fw = new FileWriter(outputPath);
             bw = new BufferedWriter(fw);
             writeFromSample(1, 16);
-            bw.write("public class GeneratedCodeFor" + "input1" + "{");
+            bw.write("public class GeneratedCodeFor" + this.outputFile + "{");
             bw.newLine();
             bw.flush();
             writeFromSample(19, 19);
@@ -395,7 +487,6 @@ public class Processor {
     
     private void writeFromSample(int startLine, int endLine){
         int count = 0;
-//        sampleFile = new File(samplePath);
         try{
             Scanner tempS = new Scanner(new BufferedReader(new FileReader(samplePath)));
             while(tempS.hasNextLine()){
@@ -410,7 +501,6 @@ public class Processor {
             System.out.println(e);
         }
     }
-    
     private String Tab(int n){
         return new String(new char[n * 4]).replace("\0", " ");
     } 
@@ -421,36 +511,39 @@ public class Processor {
             conn = DriverManager.getConnection(URL, USER, PWD);
             ps = conn.prepareStatement("select * from Information_schema.columns where table_name = 'sales'"); 
             rs = ps.executeQuery();
-//            System.out.println("Here to get the type from DB");
-//            more=rs.next(); 
-            // Connect 
             while(rs.next()){
                 nameToType.put(rs.getString("column_name"), rs.getString("data_type"));
             }
-//            System.out.println("Here is the new type");
-//            System.out.println(nameToType);
             conn.close();
-        }catch(Exception exception){
-            System.out.println("Retrieve!");
-            exception.printStackTrace();
+        }catch(Exception e){
+            System.out.println("Please maek sure that you provide the right URL, USER, PWD!");
+            e.printStackTrace();
         }
     }
             
             
     public static void main(String[] args){
-        Processor p = new Processor();
+        String USER ="postgres";
+        String PWD ="m8kimmWhyholly";
+        String URL ="jdbc:postgresql://localhost:5432/postgres";
+        Processor p = new Processor(USER, PWD, URL);
         Integer test = null;
 
         p.getTypeFromDB();
-//
-        p.readInput("./src/inputFile/", "input1.txt");
+//        System.out.println("DBTHING DONE");
+        p.readInput("sql1.sql");
+//        System.out.println("CreateFile");
         p.createFile();
-//        p.writeFromSample(1, 16);
+//        System.out.println("CreateFile");
         p.writeStruct();
+//        System.out.println("writeFile");
         p.writeDBConnetionSetup();
         p.firstScan();
+//        System.out.println("FirstScan");
         p.otherScans();
+//        System.out.println("OtherScan");
         p.printResult();
+//        System.out.println("OtherScan");
             
     }
 }

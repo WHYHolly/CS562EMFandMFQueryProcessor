@@ -31,10 +31,10 @@ public class Parser {
         if(carrier.length == 1){
             return carrier[0];
         }
-        return carrier[1] + "_" + carrier[0] + "_" + carrier[2];
+        return carrier[0] + "_" + carrier[1] + "_" + carrier[2];
     }
     
     public static void main(String[] args){
-        System.out.println(projAttrs("3_sum_quant"));
+        System.out.println(projAttrs("sum_3_quant"));
     }
 }

@@ -14,14 +14,6 @@ import utils.CONSTANTS;
 import utils.Group;
 import org.apache.commons.lang3.math.NumberUtils;
 public class expParser{
-//    private static final List<String> opList = new ArrayList<String>() {{
-//        add("+"); add("-"); add("*"); add("/"); 
-//        add("%"); add("<"); add(">"); add("=");
-//        add("("); add(")");
-//    }};
-//    private static final List<String> aggList = new ArrayList<String>() {{
-//        add("sum"); add("count"); add("min"); add("max"); add("avg"); 
-//    }};
     
     public static String parserAttr(String attr, List<String> varToNum, Set<String> aggFuncs){
         String temp = attr;
@@ -29,6 +21,7 @@ public class expParser{
             temp = temp.replace(op, " " + op + " ");
         }
         String[] strArr = temp.split("\\s+");
+        System.out.println(Arrays.toString(strArr));
         Stack<String> tempExp = new Stack();
         for(int i = 0; i < strArr.length;i++){
             String str = strArr[i];
@@ -36,10 +29,15 @@ public class expParser{
                 String para = strArr[i + 2];
 //                System.out.println(para);
                 if(para.contains(".")){
+//                    if()
                     String[] arr = para.split("\\.");
 //                    System.out.println(arr[1]);
 //                    System.out.println("Here the set is: " + aggFuncs);
 //                    System.out.println(varToNum.indexOf(arr[0]) + 1);
+                    System.out.println("Here is the str: " + strArr[i] + strArr[i + 1]+ strArr[i + 2] + strArr[i + 3]);
+                    System.out.println("Here is the str: " + str);
+                    System.out.println("Here is the para: " + para);
+//                    if()
                     aggFuncs.add(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + arr[1]);
                     tempExp.push(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + arr[1]);
                 }else{
@@ -54,20 +52,71 @@ public class expParser{
         return stackToString(tempExp);
     }
     
+    
+    public static String parserCondWhere(String cond, Map<String, String> attrToType){
+        String temp = cond;
+        for(String op: CONSTANTS.OP_LIST){
+            temp = temp.replace(op, " " + op + " ");
+        }
+
+        Stack<String> tempExp = new Stack();
+
+        String[] strArr = temp.split("\\s+");
+        for(int i = 0; i < strArr.length; i++){
+            String str = strArr[i];
+
+            if(str.length() == 0){
+                continue;
+            }else if(str.equals("and") || str.equals("or")){
+                switch(str) {
+                    case "and":
+                        tempExp.push("&&");
+                        break;
+                    case "or":
+                        tempExp.push("||");
+                        break;
+                }
+            }else{
+                if(!CONSTANTS.OP_LIST.contains(str)){
+                    if(NumberUtils.isParsable(str) || (str.startsWith("'") && str.endsWith("'"))){
+                        tempExp.push(str);
+                        if(str.startsWith("'") && str.endsWith("'")){
+                            StringCmb(tempExp);
+                        }
+                        
+                    }else if(str.equals("<") || str.equals("=") || str.equals(">")){
+                        if(!tempExp.isEmpty() && CONSTANTS.OP_LIST.contains(tempExp.peek()) ){
+                            tempExp.push(tempExp.pop() + str);
+                        }
+                        tempExp.push(str);
+                    }else{
+                        if(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String")){
+                            tempExp.push("rstm.getString(\"" + str +"\")");
+                        }else{
+                            tempExp.push("rstm.getInt(\"" + str +"\")");
+                        }
+                    }
+                }else{
+                    tempExp.push(str);
+                }
+            }
+        }
+        return stackToString(tempExp);
+    
+    }
+    
     public static String parserCond(String cond, Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns, List<Integer> fromList){
         String temp = cond;
         for(String op: CONSTANTS.OP_LIST){
             temp = temp.replace(op, " " + op + " ");
         }
-//        System.out.println("\\\\\\\\"+temp);
-        
-//        StringBuilder res = new StringBuilder();
+
         Stack<String> tempExp = new Stack();
 
         String[] strArr = temp.split("\\s+");
         for(int i = 0; i < strArr.length;i++){
             String str = strArr[i];
-//            System.out.println("Now the: " + str+" end");
+
             if(str.length() == 0){
                 continue;
             }else if(str.equals("and") || str.equals("or")){
@@ -140,9 +189,6 @@ public class expParser{
                             i = i + 3;
                             
                         }else{
-//                            System.out.println("Here in the parser");
-//                            System.out.println(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String") + "______"+str);
-//                            System.out.println( !tempExp.isEmpty() +"______"+tempExp.peek());
                             if(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String") 
                                && !tempExp.isEmpty() && CONSTANTS.CMP_OP_LIST.contains(tempExp.peek())){
                                 tempExp.push("curStruct." + str);
@@ -156,7 +202,6 @@ public class expParser{
                     tempExp.push(str);
                 }
             }
-            System.out.println();
         }
         return stackToString(tempExp);
     }
@@ -165,7 +210,12 @@ public class expParser{
             String right = stack.pop();
             String op = stack.pop();
             String left = stack.pop();
-//            if()
+            if(right.startsWith("'") && right.endsWith("'")){
+                right = "\"" + right.substring(1, right.length()-1) + "\"";
+            }
+            if(left.startsWith("'") && left.endsWith("'")){
+                left = "\"" + left.substring(1, left.length()-1) + "\"";
+            }
             switch(op){
                 case "=":
                     stack.push(left + ".compareTo(" + right + ") == 0");

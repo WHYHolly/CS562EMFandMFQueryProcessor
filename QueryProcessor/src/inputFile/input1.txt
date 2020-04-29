@@ -1,11 +1,11 @@
 SELECT ATTRIBUTE(S):
-cust, prod, 1_sum_quant, 2_sum_quant, 3_sum_quant
+cust, prod, sum_1_quant, sum_2_quant, sum_3_quant
 NUMBER OF GROUPING VARIABLES(n):
 3
 GROUPING ATTRIBUTES(V):
 cust, prod
 F-VECT([F]):
-1_sum_quant, 1_cnt_quant, 1_avg_quant, 2_sum_quant,3_sum_quant, 3_cnt_quant, 3_avg_quant
+sum_1_quant, count_2_quant, avg_1_quant, count_1_quant, sum_2_quant,sum_3_quant, count_3_quant, avg_3_quant
 SELECT CONDITION-VECT([σ]):
 _
 if(rstm.getString("state").equals("NJ") && curStruct.cust.equals(rstm.getString("cust")))
