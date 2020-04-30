@@ -21,7 +21,7 @@ public class expParser{
             temp = temp.replace(op, " " + op + " ");
         }
         String[] strArr = temp.split("\\s+");
-        System.out.println(Arrays.toString(strArr));
+//        System.out.println(Arrays.toString(strArr));
         Stack<String> tempExp = new Stack();
         for(int i = 0; i < strArr.length;i++){
             String str = strArr[i];
@@ -29,20 +29,30 @@ public class expParser{
                 String para = strArr[i + 2];
 //                System.out.println(para);
                 if(para.contains(".")){
-//                    if()
-                    String[] arr = para.split("\\.");
+                    if(para.endsWith(".")){
+                        String[] arr = para.split("\\.");
 //                    System.out.println(arr[1]);
 //                    System.out.println("Here the set is: " + aggFuncs);
 //                    System.out.println(varToNum.indexOf(arr[0]) + 1);
-                    System.out.println("Here is the str: " + strArr[i] + strArr[i + 1]+ strArr[i + 2] + strArr[i + 3]);
-                    System.out.println("Here is the str: " + str);
-                    System.out.println("Here is the para: " + para);
-//                    if()
-                    aggFuncs.add(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + arr[1]);
-                    tempExp.push(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + arr[1]);
+//                        System.out.println("Here is the str: " + strArr[i] + strArr[i + 1]+ strArr[i + 2] + strArr[i + 3]);
+//                        System.out.println("Here is the str: " + str);
+//                        System.out.println("Here is the para: " + para);
+    //                    if()
+                        aggFuncs.add(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + (strArr[i + 3].equals("*")? "star": strArr[i + 3]));
+                        tempExp.push(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + (strArr[i + 3].equals("*")? "star": strArr[i + 3]));
+                        i++;
+                    }else{
+                        String[] arr = para.split("\\.");
+//                        System.out.println("Here is the str: " + strArr[i] + strArr[i + 1]+ strArr[i + 2] + strArr[i + 3]);
+//                        System.out.println("Here is the str: " + str);
+//                        System.out.println("Here is the para: " + para);
+    //                    if()
+                        aggFuncs.add(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + (arr[1].equals("*")? "star": arr[1]));
+                        tempExp.push(str + "_" + (varToNum.indexOf(arr[0]) + 1) + "_" + (arr[1].equals("*")? "star": arr[1]));
+                    }
                 }else{
-                    aggFuncs.add(str + "_" + 0 + "_" + para);
-                    tempExp.push(str + "_" + 0 + "_" + para);
+                    aggFuncs.add(str + "_" + 0 + "_" + (para.equals("*")? "star": para));
+                    tempExp.push(str + "_" + 0 + "_" + (para.equals("*")? "star": para));
                 }                
                 i = i + 3;
             }else{
@@ -162,27 +172,47 @@ public class expParser{
                             String DBType = "";
                             String op = "";
                             if(strArr[i + 2].contains(".")){
-                                String[] para = strArr[i + 2].split("\\.");
+                                if(strArr[i + 2].endsWith(".")){
+                                    String[] para = strArr[i + 2].split("\\.");
 //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
 //                                System.out.println(varToNum);
-                                fromList.add((varToNum.indexOf(para[0]) + 1));
-                                aggFuns.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + para[1]);
+                                    fromList.add((varToNum.indexOf(para[0]) + 1));
+                                    aggFuns.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (strArr[i + 3].equals("*") ? "star": strArr[i + 3]));
+    //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
+                                    if(!tempExp.isEmpty()){
+                                        op = tempExp.peek();
+                                    }
+                                    tempExp.push("curStruct." + str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (strArr[i + 3].equals("*") ? "star": strArr[i + 3]));
+                                    DBType = strArr[i + 3];
+//                                    System.out.println("DBType!!!!!!!!!!!!!!!!!!!");
+//                                    System.out.println(DBType);
+                                    i++;
+                                
+                                }else{
+                                    String[] para = strArr[i + 2].split("\\.");
 //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
-                                if(!tempExp.isEmpty()){
-                                    op = tempExp.peek();
+//                                System.out.println(varToNum);
+                                    fromList.add((varToNum.indexOf(para[0]) + 1));
+                                    aggFuns.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (para[1].equals("*") ? "star": para[1]));
+    //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
+                                    if(!tempExp.isEmpty()){
+                                        op = tempExp.peek();
+                                    }
+                                    tempExp.push("curStruct." + str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (para[1].equals("*") ? "star": para[1]));
+                                    DBType = para[1];
+                                
                                 }
-                                tempExp.push("curStruct." + str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + para[1]);
-                                DBType = para[1];
+
                             }else{
                                 fromList.add(0);
-                                aggFuns.add(str+"_0_"+strArr[i + 2]);
+                                aggFuns.add(str + "_0_" + (strArr[i + 2].equals("*") ? "star": strArr[i + 2]));
                                 if(!tempExp.isEmpty()){
                                     op = tempExp.peek();
                                 }
-                                tempExp.push("curStruct." + str+"_0_"+strArr[i + 2]);
+                                tempExp.push("curStruct." + str+"_0_" + (strArr[i + 2].equals("*") ? "star": strArr[i + 2]));
                                 DBType = strArr[i + 2];
                             }
-                            if(CONSTANTS.dbTypeToJavaType.get(attrToType.get(DBType)).equals("String") 
+                            if( !DBType.equals("*") && CONSTANTS.dbTypeToJavaType.get(attrToType.get(DBType)).equals("String") 
                                 && !tempExp.isEmpty() && CONSTANTS.CMP_OP_LIST.contains(op)){
                                 StringCmb(tempExp);
                             }
@@ -281,14 +311,14 @@ public class expParser{
         }
         return res.toString();
     }
-    public static void main(String[] args){
-//       String sql = "(x.state=\"NY\") and (x.state = state)";
-//       List<String> varToNum = new ArrayList<>();
-//       varToNum.add("x");varToNum.add("y");
-//       System.out.println(parserAttr("2*avg(quant)", varToNum));
-//       parserSuchThat parser = new parserSuchThat(sql);
-//       parser.parseClause();
-//       
-//       System.out.println(parser);
-    }
+//    public static void main(String[] args){
+////       String sql = "(x.state=\"NY\") and (x.state = state)";
+////       List<String> varToNum = new ArrayList<>();
+////       varToNum.add("x");varToNum.add("y");
+////       System.out.println(parserAttr("2*avg(quant)", varToNum));
+////       parserSuchThat parser = new parserSuchThat(sql);
+////       parser.parseClause();
+////       
+////       System.out.println(parser);
+//    }
 }

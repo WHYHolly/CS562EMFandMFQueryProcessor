@@ -10,19 +10,9 @@ package QueryProcessorForMFandEMF;
  * @author Hangyu Wang
  */
 import java.util.*;
+import utils.CONSTANTS;
 public class Parser {
     public static String projAttrs(String exp){
-//        if(exp.contains("+")|| exp.contains("-") 
-////        || exp.contains("*") || exp.contains("/")){
-////            exp
-////            
-////        }
-//        String res = "";
-//        String[] exp;
-//        
-//        return
-
-//        String res = "";
         return "curStruct." +formatAggFunc(exp);
     }
     
@@ -34,7 +24,28 @@ public class Parser {
         return carrier[0] + "_" + carrier[1] + "_" + carrier[2];
     }
     
+    public static String formatExpWithAggFunc(String str){
+        String temp = str;
+        for(String op: CONSTANTS.OP_LIST){
+            temp = temp.replace(op, " " + op + " ");
+        }
+        String[] strArr = temp.split("\\s+");
+        
+        StringBuilder res = new StringBuilder();
+        for(String exp: strArr){
+            String curString = exp.trim();
+            if(curString.length() == 1){
+                res.append(curString);
+            }else{
+                res.append("curStruct." + curString);
+                
+            }
+        }
+        return str.contains("/")? "(double) " + res.toString(): res.toString();
+    }
+    
+    
     public static void main(String[] args){
-        System.out.println(projAttrs("sum_3_quant"));
+        System.out.println(formatExpWithAggFunc("sum_3_quant * sum_2_quant"));
     }
 }

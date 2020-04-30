@@ -65,12 +65,12 @@ public class sixOperators{
         return this.opt;
     }
     public String toString(){
-        return "Projected Attributes: " + this.getProjAttrs() + "\n" +
-               "Number of Grouping Vars: " + this.getNum() + "\n" +
-               "Grouping Attrs: " + this.getGAttrs() + "\n" +
-               "Agg Funstions: " + this.getAggFuncs() + "\n" +
-               "Conds of Vars: " + this.getCondOfGVars() + "\n" +
-               "Having: " + this.getCondOfHaving() +
+        return  "Projected Attributes: " + this.getProjAttrs() + "\n" +
+                "Number of Grouping Vars: " + this.getNum() + "\n" +
+                "Grouping Attrs: " + this.getGAttrs() + "\n" +
+                "Agg Funstions: " + this.getAggFuncs() + "\n" +
+                "Conds of Vars: " + this.getCondOfGVars() + "\n" +
+                "Having: " + this.getCondOfHaving() +
                 "Opt: " + this.getOpt();
     }
 }

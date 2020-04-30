@@ -12,6 +12,7 @@ package SQLParser;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 
 import java.util.*;
@@ -65,11 +66,11 @@ public class SQLParser {
             for(String g: groupName){
 //                System.out.println(g + ":\n" + m.group(g));
                 if(m.group(g) != null){
-                    System.out.println("////////////////////////");
-                    System.out.println(g);
-                    System.out.println(m.group(g));
+//                    System.out.println("////////////////////////");
+//                    System.out.println(g);
+//                    System.out.println(m.group(g));
                     clauseToParser.get(g).setSql(m.group(g));
-                    System.out.println("////////////////////////");
+//                    System.out.println("////////////////////////");
                 }
             }
         }
@@ -107,9 +108,9 @@ public class SQLParser {
                     break;
                 case "where":{
                     clauseToParser.get("where").parseClause(nameToType, varToNum, aggFuns);
-                    System.out.println("Here is the where!!!" + clauseToParser.get("where").getParsedClause());
+//                    System.out.println("Here is the where!!!" + clauseToParser.get("where").getParsedClause());
                     List<String> tempList = (List<String>) clauseToParser.get("where").getParsedClause();
-                    System.out.println(tempList);
+//                    System.out.println(tempList);
                     if(tempList.size() == 0){
                         List<String> conds = new ArrayList<>();
                         conds.add("_");
@@ -157,12 +158,12 @@ public class SQLParser {
             j.put("aggFuncs", this.getSixOps().getAggFuncs());
             j.put("condOfGVars", this.getSixOps().getCondOfGVars());
             j.put("condOfHaving", this.getSixOps().getCondOfHaving());
-            System.out.println(this.getSixOps().getOpt());
+//            System.out.println(this.getSixOps().getOpt());
             j.put("Opt", this.getSixOps().getOpt() == null
                                                 ? new ArrayList<>()
                                                 : this.getSixOps().getOpt());
 //            System.out.println(j);
-        }catch(Exception e){
+        }catch(JSONException e){
             System.out.println("Something wrong when you JSON IT!");
         }
 
@@ -181,9 +182,9 @@ public class SQLParser {
             this.initParser();
             p.write(this.getJSONFormat().toString());
             p.flush();
-            System.out.println(this.getJSONFormat().toString());
+//            System.out.println(this.getJSONFormat().toString());
 
-        }catch(Exception e){
+        }catch(IOException e){
             System.out.println("Your SQL CANNOT be parsed. Please make sure you enter the right EMF SQL!\nAnd in the right location!");
             e.printStackTrace();
         }

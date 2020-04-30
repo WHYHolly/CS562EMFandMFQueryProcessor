@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 import utils.Group;
 import utils.CONSTANTS;
-import utils.CONSTANTS;
+//import utils.CONSTANTS;
 public class Processor {
 
     private static String USER;
@@ -149,7 +149,7 @@ public class Processor {
                 String attr = body.aggType + "_" + body.sub + "_" + body.attr;
                 String originType = CONSTANTS.AGG_FUNCS_TO_TYPE.get(body.aggType);
                 String typeTemp = CONSTANTS.dbTypeToJavaType.get(originType);
-                System.out.println(originType+"=>"+typeTemp+"=>"+attr);
+//                System.out.println(originType+"=>"+typeTemp+"=>"+attr);
                 bw.write(Tab(2) + typeTemp + " " + attr +";");
                 bw.newLine();
                 name.add(attr);
@@ -193,8 +193,8 @@ public class Processor {
     public void firstScan(){
         try{
             List<String> g_Attrs = oneStruct.getG_ATTR();
-            System.out.println("in the first");
-            System.out.println(g_Attrs);
+//            System.out.println("in the first");
+//            System.out.println(g_Attrs);
             writeFromSample(72, 88);
             String generalCond = oneStruct.getCond_GV().get(0);
             generalCond = generalCond.equals("") ? "true": generalCond;
@@ -203,7 +203,7 @@ public class Processor {
     //        String key = "" + rstm.getString("prod") + rs.getInt("month");
             String st = "String key = \"\" ";
             for(String attr: g_Attrs){
-                System.out.println(attr+"////////////////");
+//                System.out.println(attr+"////////////////");
                 String type = CONSTANTS.dbTypeToJavaType.get(nameToType.get(attr));
                 type = type.equals("String") ? "String": "Int";
                 st += "+ rstm.get" + type + "(\"" + attr + "\")";
@@ -226,7 +226,7 @@ public class Processor {
             bw.write(Tab(5) + "MFStruct curStruct = structList.get(key);");
             bw.newLine();
             for(Group aF: oneStruct.getAggFunc()){
-                System.out.println(aF.aggType + aF.attr + aF.sub);
+//                System.out.println(aF.aggType + aF.attr + aF.sub);
                 String curType = aF.aggType;
                 String curAttr = aF.attr;
                 String curSub = aF.sub;
@@ -321,10 +321,11 @@ public class Processor {
                 bw.newLine();
                 List<Integer> preList = iter.next();
                 for(int val: preList){
+                    
                     bw.write(Tab(8) + cond_Gv.get(val) + "{");
                     bw.newLine();
                     for(Group aF: oneStruct.getAggFunc()){
-                        System.out.println(aF.aggType + aF.attr + aF.sub);
+//                        System.out.println(aF.aggType + aF.attr + aF.sub);
                         String curType = aF.aggType;
                         String curAttr = aF.attr;
                         String curSub = aF.sub;
@@ -434,17 +435,17 @@ public class Processor {
                     + "{");
             bw.newLine();
             for(String attr: oneStruct.getProjATTR()){
-                System.out.println("/////////");
-                System.out.println(attr);
+//                System.out.println("/////////");
+//                System.out.println(attr);
                 if(attr.startsWith("avg")){
-                    writeCode(Tab(5) + "System.out.printf(\"%-18s  \", " + Parser.projAttrs(attr) + ");");
+                    writeCode(Tab(5) + "System.out.printf(\"%-18s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else if(attr.startsWith("count") 
                         || attr.startsWith("max")
                         || attr.startsWith("min") 
                         || attr.startsWith("sum")){
-                    writeCode(Tab(5) + "System.out.printf(\"%-12s  \", " + Parser.projAttrs(attr) + ");");
+                    writeCode(Tab(5) + "System.out.printf(\"%-12s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else{
-                    writeCode(Tab(5) + "System.out.printf(\"%-7s  \", " + Parser.projAttrs(attr) + ");");
+                    writeCode(Tab(5) + "System.out.printf(\"%-7s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }
             }
             bw.write(Tab(5) + "System.out.println();\n");
@@ -523,9 +524,9 @@ public class Processor {
             
             
     public static void main(String[] args){
-        String USER ="postgres";
-        String PWD ="m8kimmWhyholly";
-        String URL ="jdbc:postgresql://localhost:5432/postgres";
+        String USER = "postgres";
+        String PWD = "m8kimmWhyholly";
+        String URL = "jdbc:postgresql://localhost:5432/postgres";
         Processor p = new Processor(USER, PWD, URL);
         Integer test = null;
 
