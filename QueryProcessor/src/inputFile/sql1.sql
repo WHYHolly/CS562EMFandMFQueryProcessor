@@ -1,6 +1,8 @@
-select prod, month, sum(x.quant)/sum(y.quant)
+select cust, avg(x.quant), avg(y.quant), avg(z.quant)
 from sales
 where year = 2004
-group by prod, month; x, y
-such that x.prod = prod and x.month = month,
-y.prod = prod
+group by cust; x, y, z
+such that x.cust = cust and x.state = 'NY',
+y.cust = cust and y.state = 'NJ',
+z.cust = cust and z.state = 'CT'
+having avg(x.quant) > avg(y.quant) and avg(x.quant) > avg(z.quant)

@@ -20,7 +20,7 @@ public class parserFrom extends partialParser{
     private PreparedStatement ps = null;
     private Connection conn = null;
     private ResultSet rs = null;
-    private static Map<String, String> nameToType = new HashMap<>();
+    private Map<String, String> nameToType = new HashMap<>();
     parserFrom(){
         super("from", null);
     }

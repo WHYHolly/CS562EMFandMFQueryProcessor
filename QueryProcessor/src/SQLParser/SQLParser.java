@@ -40,7 +40,7 @@ public class SQLParser {
 
 
     private List<String> groupName = new ArrayList<>(Arrays.asList("from", "groupby", "suchthat",  "where", "having", "select"));
-    private static Map<String, partialParser> clauseToParser = new HashMap<String, partialParser>() {{
+    private Map<String, partialParser> clauseToParser = new HashMap<String, partialParser>() {{
         put("from", new parserFrom());
         put("select", new parserSelect());
         put("where", new parserWhere());

@@ -33,22 +33,22 @@ public class Processor {
     private static String URL;
     private final static String SPACE = " ";
     
-    private static String outputFile = "";
+    private String outputFile = "";
     
     private OptAlgorithm opt = new OptAlgorithm();
     private PreparedStatement ps = null;
     private Connection conn = null;
     private ResultSet rs = null;
     
-    private static Map<String, String> nameToType = new HashMap<>();
+    private Map<String, String> nameToType = new HashMap<>();
 
     
     
     private PhiStruct oneStruct;
 
-    private static String outputPath;
+    private String outputPath;
 
-    private static final String samplePath = "./src/utils/codeSample.txt";
+    private final String samplePath = "./src/utils/codeSample.txt";
     File sampleFile;
     FileWriter fw;
     BufferedWriter bw;
@@ -298,7 +298,7 @@ public class Processor {
 
     }
     
-    private void otherScans(){
+    public void otherScans(){
         try{
             bw.write("///////////////Other Scan////////////");
             bw.flush();
@@ -438,12 +438,12 @@ public class Processor {
 //                System.out.println("/////////");
 //                System.out.println(attr);
                 if(attr.startsWith("avg")){
-                    writeCode(Tab(5) + "System.out.printf(\"%-18s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
+                    writeCode(Tab(5) + "System.out.printf(\"%18s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else if(attr.startsWith("count") 
                         || attr.startsWith("max")
                         || attr.startsWith("min") 
                         || attr.startsWith("sum")){
-                    writeCode(Tab(5) + "System.out.printf(\"%-12s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
+                    writeCode(Tab(5) + "System.out.printf(\"%12s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else{
                     writeCode(Tab(5) + "System.out.printf(\"%-7s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }
@@ -507,7 +507,7 @@ public class Processor {
     } 
     
     
-    private void getTypeFromDB(){
+    public void getTypeFromDB(){
         try{
             conn = DriverManager.getConnection(URL, USER, PWD);
             ps = conn.prepareStatement("select * from Information_schema.columns where table_name = 'sales'"); 
@@ -532,7 +532,7 @@ public class Processor {
 
         p.getTypeFromDB();
 //        System.out.println("DBTHING DONE");
-        p.readInput("sql1.sql");
+        p.readInput("sql2.sql");
 //        System.out.println("CreateFile");
         p.createFile();
 //        System.out.println("CreateFile");

@@ -11,6 +11,8 @@ package QueryProcessorForMFandEMF;
  */
 import java.util.*;
 import utils.CONSTANTS;
+import org.apache.commons.lang3.math.NumberUtils;
+
 public class Parser {
     public static String projAttrs(String exp){
         return "curStruct." +formatAggFunc(exp);
@@ -34,7 +36,7 @@ public class Parser {
         StringBuilder res = new StringBuilder();
         for(String exp: strArr){
             String curString = exp.trim();
-            if(curString.length() == 1){
+            if(curString.length() == 1 || NumberUtils.isParsable(curString)){
                 res.append(curString);
             }else{
                 res.append("curStruct." + curString);
@@ -46,6 +48,6 @@ public class Parser {
     
     
     public static void main(String[] args){
-        System.out.println(formatExpWithAggFunc("sum_3_quant * sum_2_quant"));
+        System.out.println(formatExpWithAggFunc("sum_0_quant"));
     }
 }

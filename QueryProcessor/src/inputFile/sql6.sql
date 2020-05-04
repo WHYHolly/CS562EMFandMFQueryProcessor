@@ -1,4 +1,6 @@
-select cust, prod, count(*)
+select prod, quant
 from sales
-where year = 2004
-group by prod, cust
+group by prod, quant; x, y
+such that x.prod = prod,
+y.prod = prod and y.quant < quant
+having count(y.prod) = count(x.prod)/2

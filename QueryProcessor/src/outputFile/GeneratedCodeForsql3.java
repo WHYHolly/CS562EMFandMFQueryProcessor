@@ -14,10 +14,13 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class GeneratedCodeForinput1{
+public class GeneratedCodeForsql3{
     class MFStruct{
-        String cust;
         String prod;
+        Integer month;
+        Long sum_0_quant;
+        Long count_0_quant;
+        Double avg_0_quant;
         Long sum_1_quant;
         Long count_1_quant;
         Double avg_1_quant;
@@ -26,8 +29,11 @@ public class GeneratedCodeForinput1{
         Double avg_2_quant;
         MFStruct(){
 
-                cust = "";
                 prod = "";
+                month = null;
+                sum_0_quant = null;
+                count_0_quant = null;
+                avg_0_quant = null;
                 sum_1_quant = null;
                 count_1_quant = null;
                 avg_1_quant = null;
@@ -47,7 +53,7 @@ public class GeneratedCodeForinput1{
     * connect DB
     */
     public static void main(String[] args){
-        GeneratedCodeForinput1 res = new GeneratedCodeForinput1();
+        GeneratedCodeForsql3 res = new GeneratedCodeForsql3();
         res.connect();
         res.retreive();
         res.close();
@@ -100,15 +106,18 @@ public class GeneratedCodeForinput1{
             
             while(more){
                 if(rstm.getInt("year")==2004) {
-                    String key = "" + rstm.getString("cust")+ rstm.getString("prod");
+                    String key = "" + rstm.getString("prod")+ rstm.getInt("month");
                     if(!structList.containsKey(key)){
                         MFStruct newStrcut = new MFStruct();
-                        newStrcut.cust = rstm.getString("cust");
                         newStrcut.prod = rstm.getString("prod");
+                        newStrcut.month = rstm.getInt("month");
                         structList.put(key, newStrcut);
                         //keySet.add(key);
                     }
                     MFStruct curStruct = structList.get(key);
+                    curStruct.sum_0_quant = curStruct.sum_0_quant == null ? rstm.getInt("quant") : curStruct.sum_0_quant+rstm.getInt("quant");
+                    curStruct.count_0_quant = curStruct.count_0_quant == null ? 1 : curStruct.count_0_quant + 1;
+                    curStruct.avg_0_quant = (curStruct.sum_0_quant + 0.0)/curStruct.count_0_quant;
                     
                 }
                 more = rstm.next();
@@ -122,12 +131,12 @@ public class GeneratedCodeForinput1{
                     while(more){
                         switch(i){
                             case 1:
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getString("state").compareTo("NJ") == 0) ){
+                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")<curStruct.month) ){
                                     curStruct.sum_1_quant = curStruct.sum_1_quant == null ? rstm.getInt("quant") : curStruct.sum_1_quant+rstm.getInt("quant");
                                     curStruct.count_1_quant = curStruct.count_1_quant == null ? 1 : curStruct.count_1_quant + 1;
                                     curStruct.avg_1_quant = (curStruct.sum_1_quant + 0.0)/curStruct.count_1_quant;
                                 }
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getString("state").compareTo("NY") == 0) ){
+                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")>curStruct.month) ){
                                     curStruct.sum_2_quant = curStruct.sum_2_quant == null ? rstm.getInt("quant") : curStruct.sum_2_quant+rstm.getInt("quant");
                                     curStruct.count_2_quant = curStruct.count_2_quant == null ? 1 : curStruct.count_2_quant + 1;
                                     curStruct.avg_2_quant = (curStruct.sum_2_quant + 0.0)/curStruct.count_2_quant;
@@ -139,17 +148,19 @@ public class GeneratedCodeForinput1{
                 }
             }
 
-            System.out.printf("%-7s  ", "cust");
             System.out.printf("%-7s  ", "prod");
+            System.out.printf("%-7s  ", "month");
             System.out.printf("%-18s  ", "avg_1_quant");
+            System.out.printf("%-18s  ", "avg_0_quant");
             System.out.printf("%-18s  \n", "avg_2_quant");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
                 if(true){
-                    System.out.printf("%-7s  ", curStruct.cust);
                     System.out.printf("%-7s  ", curStruct.prod);
-                    System.out.printf("%-18s  ", curStruct.avg_1_quant);
-                    System.out.printf("%-18s  ", curStruct.avg_2_quant);
+                    System.out.printf("%-7s  ", curStruct.month);
+                    System.out.printf("%18s  ", curStruct.avg_1_quant);
+                    System.out.printf("%18s  ", curStruct.avg_0_quant);
+                    System.out.printf("%18s  ", curStruct.avg_2_quant);
                     System.out.println();
                 }
 //                System.out.println();

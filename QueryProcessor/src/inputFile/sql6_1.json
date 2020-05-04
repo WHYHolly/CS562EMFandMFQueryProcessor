@@ -1,0 +1,1 @@
+{"Opt":[],"projAttrs":["prod","quant","avg_1_quant/avg_2_quant*2"],"gAttrs":"prod, quant","aggFuncs":["sum_1_quant","count_1_quant","avg_1_quant","sum_2_quant","count_2_quant","avg_2_quant"],"numOfGVars":2,"condOfHaving":"_","condOfGVars":["_","if(rstm.getString(\"prod\").compareTo(curStruct.prod) == 0)","if(rstm.getString(\"prod\").compareTo(curStruct.prod) == 0)"]}
