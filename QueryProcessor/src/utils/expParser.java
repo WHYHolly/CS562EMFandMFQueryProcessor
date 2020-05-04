@@ -115,7 +115,7 @@ public class expParser{
     
     }
     
-    public static String parserCond(String cond, Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns, List<Integer> fromList){
+    public static String parserCond(String cond, Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns, List<Integer> fromList, Set<String> selfAggFuncs){
         String temp = cond;
         System.out.println(cond);
         for(String op: CONSTANTS.OP_LIST){
@@ -181,6 +181,8 @@ public class expParser{
 //                                System.out.println(varToNum);
                                     fromList.add((varToNum.indexOf(para[0]) + 1));
                                     aggFuns.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (strArr[i + 3].equals("*") ? "star": strArr[i + 3]));
+                                    ////////////////////////////////////////////
+                                    selfAggFuncs.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (strArr[i + 3].equals("*") ? "star": strArr[i + 3]));
     //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
                                     if(!tempExp.isEmpty()){
                                         op = tempExp.peek();
@@ -197,6 +199,7 @@ public class expParser{
 //                                System.out.println(varToNum);
                                     fromList.add((varToNum.indexOf(para[0]) + 1));
                                     aggFuns.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (para[1].equals("*") ? "star": para[1]));
+                                    selfAggFuncs.add(str+"_"+ (varToNum.indexOf(para[0]) + 1)+ "_" + (para[1].equals("*") ? "star": para[1]));
     //                                System.out.println(str+"_"+ para[0]+ "_" + para[1]);
                                     if(!tempExp.isEmpty()){
                                         op = tempExp.peek();
@@ -209,6 +212,7 @@ public class expParser{
                             }else{
                                 fromList.add(0);
                                 aggFuns.add(str + "_0_" + (strArr[i + 2].equals("*") ? "star": strArr[i + 2]));
+                                selfAggFuncs.add(str + "_0_" + (strArr[i + 2].equals("*") ? "star": strArr[i + 2]));
                                 if(!tempExp.isEmpty()){
                                     op = tempExp.peek();
                                 }

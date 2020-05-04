@@ -32,13 +32,13 @@ public class GeneratedCodeForsql3{
                 prod = "";
                 month = null;
                 sum_0_quant = null;
-                count_0_quant = null;
+                count_0_quant = 0L;
                 avg_0_quant = null;
                 sum_1_quant = null;
-                count_1_quant = null;
+                count_1_quant = 0L;
                 avg_1_quant = null;
                 sum_2_quant = null;
-                count_2_quant = null;
+                count_2_quant = 0L;
                 avg_2_quant = null;
         }
     }
@@ -150,17 +150,17 @@ public class GeneratedCodeForsql3{
 
             System.out.printf("%-7s  ", "prod");
             System.out.printf("%-7s  ", "month");
-            System.out.printf("%-18s  ", "avg_1_quant");
-            System.out.printf("%-18s  ", "avg_0_quant");
-            System.out.printf("%-18s  \n", "avg_2_quant");
+            System.out.printf("%-24s  ", "avg_1_quant");
+            System.out.printf("%-24s  ", "avg_0_quant");
+            System.out.printf("%-24s  \n", "avg_2_quant");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
                 if(true){
                     System.out.printf("%-7s  ", curStruct.prod);
-                    System.out.printf("%-7s  ", curStruct.month);
-                    System.out.printf("%18s  ", curStruct.avg_1_quant);
-                    System.out.printf("%18s  ", curStruct.avg_0_quant);
-                    System.out.printf("%18s  ", curStruct.avg_2_quant);
+                    System.out.printf("%7s  ", curStruct.month);
+                    System.out.printf("%24.16f  ", curStruct.avg_1_quant);
+                    System.out.printf("%24.16f  ", curStruct.avg_0_quant);
+                    System.out.printf("%24.16f  ", curStruct.avg_2_quant);
                     System.out.println();
                 }
 //                System.out.println();

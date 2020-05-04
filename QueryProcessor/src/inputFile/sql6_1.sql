@@ -1,5 +1,6 @@
-select prod, quant, avg(x.quant) / avg(y.quant) * 2
+select prod, month, avg(x.quant), avg(y.quant)
 from sales
-group by prod, quant; x, y
-such that x.prod = prod,
-y.prod = prod
+where year = 2004
+group by prod, month; x, y
+such that x.prod = prod and x.month = month - 1,
+y.prod = prod and y.month = month + 1

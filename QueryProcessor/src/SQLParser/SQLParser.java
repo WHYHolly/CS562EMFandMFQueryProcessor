@@ -97,7 +97,7 @@ public class SQLParser {
                         sixOps.setOpt(null);
                     }else{
                         clauseToParser.get("suchthat").parseClause(nameToType, varToNum, aggFuns);
-    //                    System.out.println(clauseToParser.get("suchthat").getParsedClause());
+                        System.out.println(clauseToParser.get("suchthat").getParsedClause());
                         sixOps.setCondOfGVars((List<String>) clauseToParser.get("suchthat").getParsedClause());
                         sixOps.setOpt(clauseToParser.get("suchthat").getGraph());
                     }
@@ -197,7 +197,7 @@ public class SQLParser {
         String URL ="jdbc:postgresql://localhost:5432/postgres";
         
         SQLParser pTest = new SQLParser(USER, PWD, URL);
-        pTest.performSQLParser("sql1.sql", "input1.json");
+        pTest.performSQLParser("sql4.sql", "input4.json");
     }
 }
 

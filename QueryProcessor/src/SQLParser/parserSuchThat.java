@@ -36,14 +36,30 @@ public class parserSuchThat extends partialParser{
     
     public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
         String[] gvConds = super.sql.split(",");
+        Set<String> selfAggFuncs = new HashSet<>();
         int to = 1;
         
         for(String cond: gvConds){
 //            System.out.println("This condition:" + cond);
             List<Integer> fromList = new ArrayList<>();
-            condsList.add(expParser.parserCond(cond.trim(), attrToType, varToNum, aggFuns, fromList));
+            condsList.add(expParser.parserCond(cond.trim(), attrToType, varToNum, aggFuns, fromList, selfAggFuncs));
 //            System.out.println("//////////the opt list is there:" + to + fromList);
-
+//            System.out.println("/////////////////////////");            
+//            System.out.println(selfAggFuncs);
+//            System.out.println("/////////////////////////");   
+            if(selfAggFuncs.size() != 0){
+                StringBuilder tempPre = new StringBuilder();
+                tempPre.append("(");
+                for(String preCond: selfAggFuncs){
+                    tempPre.append("curStruct.");
+                    tempPre.append(preCond);
+                    tempPre.append("!=null&&");
+                }
+                String preCondStr = tempPre.toString();
+                preCondStr = preCondStr.substring(0, preCondStr.length() - 2);
+                preCondStr = preCondStr + ")?" + condsList.get(condsList.size() - 1)+ ":false";
+                condsList.set(condsList.size() - 1, preCondStr);
+            }
             for(int from: fromList){
                 JSONObject edge = new JSONObject();
                 try{

@@ -24,8 +24,8 @@ public class GeneratedCodeForsql6{
 
                 prod = "";
                 quant = null;
-                count_1_prod = null;
-                count_2_prod = null;
+                count_1_prod = 0L;
+                count_2_prod = 0L;
         }
     }
     private static final String USER = "postgres";
@@ -131,9 +131,9 @@ public class GeneratedCodeForsql6{
             System.out.printf("%-7s  \n", "quant");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
-                if(curStruct.count_2_prod==curStruct.count_1_prod/2){
+                if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2:false){
                     System.out.printf("%-7s  ", curStruct.prod);
-                    System.out.printf("%-7s  ", curStruct.quant);
+                    System.out.printf("%7s  ", curStruct.quant);
                     System.out.println();
                 }
 //                System.out.println();

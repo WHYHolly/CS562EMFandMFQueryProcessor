@@ -27,8 +27,22 @@ public class parserHaving extends partialParser{
     }
 //    @Override
     public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
+        Set<String> selfAggFuncs = new HashSet<>();
         if(sql != null && sql.length() != 0){
-            this.parsedSql.add(expParser.parserCond(sql.trim(), attrToType, varToNum, aggFuns, new ArrayList<>()));
+            this.parsedSql.add(expParser.parserCond(sql.trim(), attrToType, varToNum, aggFuns, new ArrayList<>(), selfAggFuncs));
+            if(selfAggFuncs.size() != 0){
+                StringBuilder tempPre = new StringBuilder();
+                tempPre.append("(");
+                for(String preCond: selfAggFuncs){
+                    tempPre.append("curStruct.");
+                    tempPre.append(preCond);
+                    tempPre.append("!=null&&");
+                }
+                String preCondStr = tempPre.toString();
+                preCondStr = preCondStr.substring(0, preCondStr.length() - 2);
+                preCondStr = preCondStr + ")?" + parsedSql.get(parsedSql.size() - 1)+ ":false";
+                parsedSql.set(parsedSql.size() - 1, preCondStr);
+            }
         }
     }
 //    @Override

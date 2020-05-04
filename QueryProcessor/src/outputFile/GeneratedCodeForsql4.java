@@ -30,12 +30,12 @@ public class GeneratedCodeForsql4{
                 prod = "";
                 month = null;
                 sum_1_quant = null;
-                count_1_quant = null;
+                count_1_quant = 0L;
                 avg_1_quant = null;
                 sum_2_quant = null;
-                count_2_quant = null;
+                count_2_quant = 0L;
                 avg_2_quant = null;
-                count_3_star = null;
+                count_3_star = 0L;
         }
     }
     private static final String USER = "postgres";
@@ -136,7 +136,7 @@ public class GeneratedCodeForsql4{
                                 }
                             break;
                             case 2:
-                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month&&rstm.getInt("quant")>curStruct.avg_1_quant&&rstm.getInt("quant")<curStruct.avg_2_quant) ){
+                                if(rstm.getInt("year")==2004 && ((curStruct.avg_2_quant!=null&&curStruct.avg_1_quant!=null)?rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month&&rstm.getInt("quant")>curStruct.avg_1_quant&&rstm.getInt("quant")<curStruct.avg_2_quant:false) ){
                                     curStruct.count_3_star = curStruct.count_3_star == null ? 1 : curStruct.count_3_star + 1;
                                 }
                             break;
@@ -153,7 +153,7 @@ public class GeneratedCodeForsql4{
 //                MFStruct curStruct = keyToStruct.get(key);
                 if(true){
                     System.out.printf("%-7s  ", curStruct.prod);
-                    System.out.printf("%-7s  ", curStruct.month);
+                    System.out.printf("%7s  ", curStruct.month);
                     System.out.printf("%12s  ", curStruct.count_3_star);
                     System.out.println();
                 }

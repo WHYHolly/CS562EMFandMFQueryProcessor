@@ -129,13 +129,15 @@ public class GeneratedCodeForsql2{
 
             System.out.printf("%-7s  ", "prod");
             System.out.printf("%-7s  ", "month");
-            System.out.printf("%-12s  \n", "sum_1_quant/sum_2_quant");
+            System.out.printf("%-24s  ", "sum_1_quant*3.5");
+            System.out.printf("%-12s  \n", "sum_2_quant");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
                 if(true){
                     System.out.printf("%-7s  ", curStruct.prod);
-                    System.out.printf("%-7s  ", curStruct.month);
-                    System.out.printf("%12s  ", (double) curStruct.sum_1_quant/curStruct.sum_2_quant);
+                    System.out.printf("%7s  ", curStruct.month);
+                    System.out.printf("%24.16f  ", curStruct.sum_1_quant*3.5);
+                    System.out.printf("%12s  ", curStruct.sum_2_quant);
                     System.out.println();
                 }
 //                System.out.println();

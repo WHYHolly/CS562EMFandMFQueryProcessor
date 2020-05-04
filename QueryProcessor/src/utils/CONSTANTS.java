@@ -51,4 +51,28 @@ public class CONSTANTS{
     public static final List<String> CMP_OP_LIST = new ArrayList<String>() {{
        add("<"); add(">"); add("="); add("<>"); add(">="); add("<=");
     }};
+    
+    public static final Map<String, String> PRINT_MAP = new HashMap<String, String>() {{
+        put("character varying", "System.out.printf(\"%-7s  \", ");
+        put("character", "System.out.printf(\"%-7s  \", ");
+        put("integer", "System.out.printf(\"%7s  \", ");
+        put("bigint", "System.out.printf(\"%12s  \", ");
+        put("numeric", "System.out.printf(\"%24.16f  \", ");
+    }};
+    
+    public static final Map<String, String> PRINT_ATTR_MAP = new HashMap<String, String>() {{
+        put("character varying", "System.out.printf(\"%-7s  \", \"");
+        put("character", "System.out.printf(\"%-7s  \", \"");
+        put("integer", "System.out.printf(\"%-7s  \", \"");
+        put("bigint", "System.out.printf(\"%-12s  \", \"");
+        put("numeric", "System.out.printf(\"%-24s  \", \"");
+    }};
+
+    public static final Map<String, String> PRINT_LAST_ATTR_MAP = new HashMap<String, String>() {{
+        put("character varying", "System.out.printf(\"%-7s  \\n\", \"");
+        put("character", "System.out.printf(\"%-7s  \\n\", \"");
+        put("integer", "System.out.printf(\"%-7s  \\n\", \"");
+        put("bigint", "System.out.printf(\"%-12s  \\n\", \"");
+        put("numeric", "System.out.printf(\"%-24s  \\n\", \"");
+    }};
 }

@@ -42,8 +42,6 @@ public class Processor {
     
     private Map<String, String> nameToType = new HashMap<>();
 
-    
-    
     private PhiStruct oneStruct;
 
     private String outputPath;
@@ -101,10 +99,7 @@ public class Processor {
             for(String attr: gAttrStr.split(",")){
                 gAttributes.add(attr.trim());
             }
-            
-            
-//            System.out.println("///////////");
-//            System.out.println(gAttributes);
+
             List<String> aggregateFuncs = new ArrayList<>();
             for(int i = 0; i < j.getJSONArray("aggFuncs").length(); i++){
                 aggregateFuncs.add(j.getJSONArray("aggFuncs").getString(i));
@@ -160,9 +155,15 @@ public class Processor {
             bw.newLine();
             bw.newLine();
             bw.flush();
-
+//            System.out.println("/////////////");
+//            System.out.println(name);
+//            System.out.println(type);
             for(int i = 0; i < name.size(); i++){
-                bw.write(Tab(4) + name.get(i) + CONSTANTS.typeToInitVal.get(type.get(i)) + ";");
+                if(name.get(i).startsWith("count")){
+                    bw.write(Tab(4) + name.get(i) + " = 0L" + ";");
+                }else{
+                    bw.write(Tab(4) + name.get(i) + CONSTANTS.typeToInitVal.get(type.get(i)) + ";");
+                }
                 bw.newLine();
                 bw.flush();
             }
@@ -403,27 +404,36 @@ public class Processor {
             final int len = oneStruct.getProjATTR().size();
             for(int i = 0; i < len; i++){
                 if(i == len - 1){
-                    if(oneStruct.getProjATTR().get(i).startsWith("avg")){
-                        writeCode(Tab(3) + "System.out.printf(\"%-18s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                    if(oneStruct.getProjATTR().get(i).startsWith("avg")
+                        || oneStruct.getProjATTR().get(i).contains("+")
+                        || oneStruct.getProjATTR().get(i).contains("-")
+                        || oneStruct.getProjATTR().get(i).contains("*")
+                        || oneStruct.getProjATTR().get(i).contains("/")){
+                        writeCode(Tab(3) + "System.out.printf(\"%-24s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
                     }else if(oneStruct.getProjATTR().get(i).startsWith("count") 
                             || oneStruct.getProjATTR().get(i).startsWith("min")
                             || oneStruct.getProjATTR().get(i).startsWith("max")
                             || oneStruct.getProjATTR().get(i).startsWith("sum")){
                         writeCode(Tab(3) + "System.out.printf(\"%-12s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
                     }else{
-                        writeCode(Tab(3) + "System.out.printf(\"%-7s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                        writeCode(Tab(3) + CONSTANTS.PRINT_LAST_ATTR_MAP.get(nameToType.get(oneStruct.getProjATTR().get(i))) + oneStruct.getProjATTR().get(i) + "\");");
+//                        writeCode(Tab(3) + "System.out.printf(\"%-7s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
                     }
                     break;
                 }
-                if(oneStruct.getProjATTR().get(i).startsWith("avg")){
-                    writeCode(Tab(3) + "System.out.printf(\"%-18s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                if(oneStruct.getProjATTR().get(i).startsWith("avg")
+                    || oneStruct.getProjATTR().get(i).contains("+")
+                    || oneStruct.getProjATTR().get(i).contains("-")
+                    || oneStruct.getProjATTR().get(i).contains("*")
+                    || oneStruct.getProjATTR().get(i).contains("/")){
+                    writeCode(Tab(3) + "System.out.printf(\"%-24s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
                 }else if(oneStruct.getProjATTR().get(i).startsWith("count") 
                             || oneStruct.getProjATTR().get(i).startsWith("min")
                             || oneStruct.getProjATTR().get(i).startsWith("max")
                             || oneStruct.getProjATTR().get(i).startsWith("sum")){
                     writeCode(Tab(3) + "System.out.printf(\"%-12s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
                 }else{
-                    writeCode(Tab(3) + "System.out.printf(\"%-7s  \", \"" + oneStruct.getProjATTR().get(i) + "\");");
+                    writeCode(Tab(3) + CONSTANTS.PRINT_ATTR_MAP.get(nameToType.get(oneStruct.getProjATTR().get(i))) + oneStruct.getProjATTR().get(i) + "\");");
                 }
                 
             }
@@ -437,15 +447,22 @@ public class Processor {
             for(String attr: oneStruct.getProjATTR()){
 //                System.out.println("/////////");
 //                System.out.println(attr);
-                if(attr.startsWith("avg")){
-                    writeCode(Tab(5) + "System.out.printf(\"%18s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
+                if(attr.startsWith("avg") 
+                    || attr.contains("+") || attr.contains("-")
+                    || attr.contains("*") || attr.contains("/")){
+                    writeCode(Tab(5) + "System.out.printf(\"%24.16f  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else if(attr.startsWith("count") 
                         || attr.startsWith("max")
                         || attr.startsWith("min") 
                         || attr.startsWith("sum")){
                     writeCode(Tab(5) + "System.out.printf(\"%12s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else{
-                    writeCode(Tab(5) + "System.out.printf(\"%-7s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
+//                    CONSTANTS.PRINT_MAP.get(nameToType.get(Parser.formatExpWithAggFunc(attr)));
+                    writeCode(Tab(5) + CONSTANTS.PRINT_MAP.get(nameToType.get(attr)) + Parser.formatExpWithAggFunc(attr) + ");");
+//                    System.out.println(attr);
+//                    System.out.println(nameToType.get(attr));
+//                    System.out.println(CONSTANTS.PRINT_MAP.toString());
+//                    writeCode(Tab(5) + CONSTANTS.PRINT_MAP.get(nameToType.get(Parser.formatExpWithAggFunc(attr))) + Parser.formatExpWithAggFunc(attr) + ");");
                 }
             }
             bw.write(Tab(5) + "System.out.println();\n");
@@ -532,7 +549,7 @@ public class Processor {
 
         p.getTypeFromDB();
 //        System.out.println("DBTHING DONE");
-        p.readInput("sql2.sql");
+        p.readInput("sql6_1.sql");
 //        System.out.println("CreateFile");
         p.createFile();
 //        System.out.println("CreateFile");

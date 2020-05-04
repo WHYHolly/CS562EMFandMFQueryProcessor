@@ -26,9 +26,9 @@ public class GeneratedCodeForsql5{
 
                 prod = "";
                 cust = "";
-                count_1_quant = null;
+                count_1_quant = 0L;
                 sum_2_quant = null;
-                count_2_quant = null;
+                count_2_quant = 0L;
                 avg_2_quant = null;
         }
     }
@@ -136,14 +136,14 @@ public class GeneratedCodeForsql5{
             System.out.printf("%-7s  ", "cust");
             System.out.printf("%-7s  ", "prod");
             System.out.printf("%-12s  ", "count_1_quant");
-            System.out.printf("%-18s  \n", "avg_2_quant");
+            System.out.printf("%-24s  \n", "avg_2_quant");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
                 if(true){
                     System.out.printf("%-7s  ", curStruct.cust);
                     System.out.printf("%-7s  ", curStruct.prod);
                     System.out.printf("%12s  ", curStruct.count_1_quant);
-                    System.out.printf("%18s  ", curStruct.avg_2_quant);
+                    System.out.printf("%24.16f  ", curStruct.avg_2_quant);
                     System.out.println();
                 }
 //                System.out.println();
