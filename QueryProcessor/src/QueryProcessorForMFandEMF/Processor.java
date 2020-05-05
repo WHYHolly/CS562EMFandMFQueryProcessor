@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 import utils.Group;
 import utils.CONSTANTS;
-//import utils.CONSTANTS;
+
 public class Processor {
 
     private static String USER;
@@ -549,7 +549,7 @@ public class Processor {
 
         p.getTypeFromDB();
 //        System.out.println("DBTHING DONE");
-        p.readInput("sql6_1.sql");
+        p.readInput("tempJSON.json");
 //        System.out.println("CreateFile");
         p.createFile();
 //        System.out.println("CreateFile");

@@ -325,9 +325,31 @@ public class expParser{
     static String stackToString(Stack<String> stack){
         StringBuilder res = new StringBuilder();
         while(!stack.isEmpty()){
-                res.insert(0, stack.peek().equals("=")
-                                            ? stack.pop() + "="
-                                            :  stack.pop());
+            StringBuilder ops = new StringBuilder();
+            while(CONSTANTS.OP_LIST.contains(stack.peek())){
+                ops.insert(0, stack.pop());
+            }
+            
+            if(ops.length() != 0){
+                String opStr = ops.toString();
+                switch(opStr) {
+                    case "=":
+                        res.insert(0, "==");
+                        break;
+                    case "<>":
+                        res.insert(0, "!=");
+                        break;
+                    default:
+                        res.insert(0, opStr);
+                        break;
+                }
+            }else{
+                res.insert(0, stack.pop());
+            }
+            
+//                res.insert(0, stack.peek().equals("=")
+//                                            ? stack.pop() + "="
+//                                            :  stack.pop());
         }
         return res.toString();
     }

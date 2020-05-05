@@ -161,7 +161,7 @@ public class GeneratedCodeForsql4{
             }
         
         }catch(Exception exception){
-            System.out.println("Retrieve!");
+            System.out.println("Something Wrong with the Retrieve!");
             exception.printStackTrace();
         }
     

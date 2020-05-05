@@ -1,4 +1,4 @@
-select prod, month, sum(x.quant)*3.5, sum(y.quant)
+select prod, month, sum(x.quant)/sum(y.quant)
 from sales
 where year = 2004
 group by prod, month; x, y

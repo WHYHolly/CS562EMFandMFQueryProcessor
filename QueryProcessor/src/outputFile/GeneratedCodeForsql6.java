@@ -131,7 +131,7 @@ public class GeneratedCodeForsql6{
             System.out.printf("%-7s  \n", "quant");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
-                if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2:false){
+                if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2.0:false){
                     System.out.printf("%-7s  ", curStruct.prod);
                     System.out.printf("%7s  ", curStruct.quant);
                     System.out.println();
@@ -140,7 +140,7 @@ public class GeneratedCodeForsql6{
             }
         
         }catch(Exception exception){
-            System.out.println("Retrieve!");
+            System.out.println("Something Wrong with the Retrieve!");
             exception.printStackTrace();
         }
     

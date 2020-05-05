@@ -1,6 +1,6 @@
-select prod, month, avg(x.quant), avg(quant), avg(y.quant)
+select cust, month, avg(x.quant), avg(quant), avg(y.quant)
 from sales
 where year = 2004
-group by prod, month; x, y
-such that x.prod = prod and x.month < month,
-y.prod = prod and y.month > month
+group by cust, month; x, y
+such that x.cust = cust and x.month < month,
+y.cust = cust and y.month > month
