@@ -1,12 +1,12 @@
 /*
  * @author Hangyu Wang (CWID: 10444246)
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This is the generated code.
+ * This should be runnable if your input is right.
  */
 package outputFile;
 
 /**
- *
+ * 
  * 
  */
 import java.util.*;
@@ -39,63 +39,64 @@ public class GeneratedCodeForsql5{
     private static final String USER = "postgres";
     private static final String PWD = "m8kimmWhyholly";
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-//    private PreparedStatement ps = null;
-    private Connection conn = null;
-//    private ResultSet rs = null;
+
+    private Connection con = null;
+
     
     /*
-    * connect DB
-    */
+     * main function
+     */
     public static void main(String[] args){
         GeneratedCodeForsql5 res = new GeneratedCodeForsql5();
         res.connect();
         res.retreive();
         res.close();
     }
-    
-    
+
+    /*
+     * connect DB
+     */
     void connect(){
         try{
-            Class.forName("org.postgresql.Driver");     //Loads the required driver
-            //System.out.println("Success loading Driver!");
+            con = DriverManager.getConnection(URL, USER, PWD);
+
         }catch(Exception exception){
             System.out.println("Fail loading Driver!");
             exception.printStackTrace();
         }
     }
+
     /*
-    * disconnect DB
-    */
+     * disconnect DB
+     */
     void close(){
         try{
-//            if(rs != null) {
-//                rs.close();
-//            }
-//            if (ps != null) {
-//                ps.close();
-//            }
-            if (conn != null) {
-                conn.close();
+
+            if (con != null) {
+                con.close();
             }
-        } catch (Exception ex) {
-                ex.printStackTrace();
+
+
+        }catch(Exception e){
+                e.printStackTrace();
         }
     }
     
     void retreive(){
         try{
-            Connection con = DriverManager.getConnection(URL, USER, PWD);    //connect to the database using the password and username
-            //System.out.println("Success connecting server!");
+            
+           
             ResultSet rstm = null;
             PreparedStatement pstm = null;
             String ret = "select * from sales";
-            //resultset object gets the set of values retreived from the database
+            ///////////////First Scan////////////
+            
             boolean more;
             pstm = con.prepareStatement(ret);
             rstm = pstm.executeQuery(); 
-            Map<String, MFStruct> structList = new HashMap<>(); //Set<String> keySet = new HashSet<>();
+            Map<String, MFStruct> structList = new HashMap<>();
             
-            //////
+
             more = rstm.next();
             
             while(more){
@@ -106,14 +107,14 @@ public class GeneratedCodeForsql5{
                         newStrcut.prod = rstm.getString("prod");
                         newStrcut.cust = rstm.getString("cust");
                         structList.put(key, newStrcut);
-                        //keySet.add(key);
+
                     }
                     MFStruct curStruct = structList.get(key);
                     
                 }
                 more = rstm.next();
             }
-///////////////Other Scan////////////
+            ///////////////Other Scan(s)////////////
             int count = 1;
             for(int i = 1; i <= count; i++){
                 for(MFStruct curStruct: structList.values()){
@@ -139,12 +140,13 @@ public class GeneratedCodeForsql5{
                 }
             }
 
+            ///////////////Print Out////////////
             System.out.printf("%-7s  ", "cust");
             System.out.printf("%-7s  ", "prod");
             System.out.printf("%-24s  ", "avg_1_quant");
             System.out.printf("%-24s  \n", "avg_2_quant");
             for(MFStruct curStruct: structList.values()){
-//                MFStruct curStruct = keyToStruct.get(key);
+                
                 if(true){
                     System.out.printf("%-7s  ", curStruct.cust);
                     System.out.printf("%-7s  ", curStruct.prod);
@@ -152,7 +154,7 @@ public class GeneratedCodeForsql5{
                     System.out.printf("%24.16f  ", curStruct.avg_2_quant);
                     System.out.println();
                 }
-//                System.out.println();
+                 
             }
         
         }catch(Exception exception){

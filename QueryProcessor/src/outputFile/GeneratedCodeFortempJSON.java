@@ -14,28 +14,18 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class GeneratedCodeForsql4{
+public class GeneratedCodeFortempJSON{
     class MFStruct{
         String prod;
-        Integer month;
-        Long sum_1_quant;
-        Long count_1_quant;
-        Double avg_1_quant;
-        Long sum_2_quant;
-        Long count_2_quant;
-        Double avg_2_quant;
-        Long count_3_star;
+        Integer quant;
+        Long count_1_prod;
+        Long count_2_prod;
         MFStruct(){
 
                 prod = "";
-                month = null;
-                sum_1_quant = null;
-                count_1_quant = 0L;
-                avg_1_quant = null;
-                sum_2_quant = null;
-                count_2_quant = 0L;
-                avg_2_quant = null;
-                count_3_star = 0L;
+                quant = null;
+                count_1_prod = 0L;
+                count_2_prod = 0L;
         }
     }
     private static final String USER = "postgres";
@@ -49,7 +39,7 @@ public class GeneratedCodeForsql4{
      * main function
      */
     public static void main(String[] args){
-        GeneratedCodeForsql4 res = new GeneratedCodeForsql4();
+        GeneratedCodeFortempJSON res = new GeneratedCodeFortempJSON();
         res.connect();
         res.retreive();
         res.close();
@@ -91,7 +81,6 @@ public class GeneratedCodeForsql4{
             ResultSet rstm = null;
             PreparedStatement pstm = null;
             String ret = "select * from sales";
-            ///////////////First Scan////////////
             
             boolean more;
             pstm = con.prepareStatement(ret);
@@ -102,12 +91,12 @@ public class GeneratedCodeForsql4{
             more = rstm.next();
             
             while(more){
-                if(rstm.getInt("year")==2004) {
-                    String key = "" + rstm.getString("prod")+ rstm.getInt("month");
+                if(true) {
+                    String key = "" + rstm.getString("prod")+ rstm.getInt("quant");
                     if(!structList.containsKey(key)){
                         MFStruct newStrcut = new MFStruct();
                         newStrcut.prod = rstm.getString("prod");
-                        newStrcut.month = rstm.getInt("month");
+                        newStrcut.quant = rstm.getInt("quant");
                         structList.put(key, newStrcut);
 
                     }
@@ -116,8 +105,8 @@ public class GeneratedCodeForsql4{
                 }
                 more = rstm.next();
             }
-            ///////////////Other Scan(s)////////////
-            int count = 2;
+///////////////Other Scan(s)////////////
+            int count = 1;
             for(int i = 1; i <= count; i++){
                 for(MFStruct curStruct: structList.values()){
                     rstm = pstm.executeQuery(); 
@@ -125,20 +114,11 @@ public class GeneratedCodeForsql4{
                     while(more){
                         switch(i){
                             case 1:
-                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month-1) ){
-                                    curStruct.sum_1_quant = curStruct.sum_1_quant == null ? rstm.getInt("quant") : curStruct.sum_1_quant+rstm.getInt("quant");
-                                    curStruct.count_1_quant = curStruct.count_1_quant == null ? 1 : curStruct.count_1_quant + 1;
-                                    curStruct.avg_1_quant = (curStruct.sum_1_quant + 0.0)/curStruct.count_1_quant;
+                                if(rstm.getString("prod").compareTo(curStruct.prod) == 0){
+                                    curStruct.count_1_prod = curStruct.count_1_prod == null ? 1 : curStruct.count_1_prod + 1;
                                 }
-                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month+1) ){
-                                    curStruct.sum_2_quant = curStruct.sum_2_quant == null ? rstm.getInt("quant") : curStruct.sum_2_quant+rstm.getInt("quant");
-                                    curStruct.count_2_quant = curStruct.count_2_quant == null ? 1 : curStruct.count_2_quant + 1;
-                                    curStruct.avg_2_quant = (curStruct.sum_2_quant + 0.0)/curStruct.count_2_quant;
-                                }
-                            break;
-                            case 2:
-                                if(rstm.getInt("year")==2004 && ((curStruct.avg_2_quant!=null&&curStruct.avg_1_quant!=null)?rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month&&rstm.getInt("quant")>curStruct.avg_1_quant&&rstm.getInt("quant")<curStruct.avg_2_quant:false) ){
-                                    curStruct.count_3_star = curStruct.count_3_star == null ? 1 : curStruct.count_3_star + 1;
+                                if(rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("quant")<curStruct.quant){
+                                    curStruct.count_2_prod = curStruct.count_2_prod == null ? 1 : curStruct.count_2_prod + 1;
                                 }
                             break;
                         }
@@ -147,16 +127,13 @@ public class GeneratedCodeForsql4{
                 }
             }
 
-            ///////////////Print Out////////////
             System.out.printf("%-7s  ", "prod");
-            System.out.printf("%-7s  ", "month");
-            System.out.printf("%-12s  \n", "count_3_star");
+            System.out.printf("%-7s  \n", "quant");
             for(MFStruct curStruct: structList.values()){
                 
-                if(true){
+                if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2.0:false){
                     System.out.printf("%-7s  ", curStruct.prod);
-                    System.out.printf("%7s  ", curStruct.month);
-                    System.out.printf("%12s  ", curStruct.count_3_star);
+                    System.out.printf("%7s  ", curStruct.quant);
                     System.out.println();
                 }
                  

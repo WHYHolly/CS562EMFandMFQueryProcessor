@@ -1,14 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @author Hangyu Wang (CWID: 10444246)
+ * this a class for clause parser to inhert
+ * children in SQLParser: parserFrom; parserGroupBy; parserHaving;
+ *                        parserSelect; parserSuchThat; parserWhere
  */
 package utils;
 
-/**
- *
- * @author Holly
- */
 import java.util.*;
 import org.json.JSONArray;
 public class partialParser{
@@ -32,9 +29,11 @@ public class partialParser{
     public Object getParsedClause(){
         return new HashMap<String, String>();
     };
+    
     public int getNumofG(){
         return -1;
     }
+    
     public String getGAttributes(){
         return null;
     }

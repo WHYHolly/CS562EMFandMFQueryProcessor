@@ -1,13 +1,12 @@
 /*
  * @author Hangyu Wang (CWID: 10444246)
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This is SQL Parser.
+ * For suth that clause
  */
 package SQLParser;
 
 import java.util.*;
-//import java.util.List;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import utils.partialParser;
@@ -16,10 +15,6 @@ import utils.expParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- *
- * @author Holly
- */
 public class parserSuchThat extends partialParser{
 
     private List<String> condsList = new ArrayList<>();
@@ -41,13 +36,10 @@ public class parserSuchThat extends partialParser{
         int to = 1;
         
         for(String cond: gvConds){
-//            System.out.println("This condition:" + cond);
+
             List<Integer> fromList = new ArrayList<>();
             condsList.add(expParser.parserCond(cond.trim(), attrToType, varToNum, aggFuns, fromList, selfAggFuncs));
-//            System.out.println("//////////the opt list is there:" + to + fromList);
-//            System.out.println("/////////////////////////");            
-//            System.out.println(selfAggFuncs);
-//            System.out.println("/////////////////////////");   
+
             if(selfAggFuncs.size() != 0){
                 StringBuilder tempPre = new StringBuilder();
                 tempPre.append("(");
@@ -69,7 +61,6 @@ public class parserSuchThat extends partialParser{
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-//                System.out.println(edge);
                 graph.put(edge);
             }
             to++;

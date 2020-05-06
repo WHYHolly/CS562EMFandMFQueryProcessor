@@ -1,1 +1,1 @@
-{"Opt":[],"projAttrs":["cust"],"gAttrs":"cust","aggFuncs":[],"numOfGVars":0,"condOfHaving":"_","condOfGVars":["_"]}
+{"Opt":[],"projAttrs":["prod","quant","month"],"gAttrs":"prod, quant, month","aggFuncs":[],"numOfGVars":0,"condOfHaving":"_","condOfGVars":["_"]}

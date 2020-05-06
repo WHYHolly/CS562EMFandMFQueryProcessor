@@ -5,8 +5,8 @@
  * Env: Here everything is built and run on Netbeans 8.2. 
  *      Better to use the Netbeans 8.2 to run my codes. Since the IDE is 
  *      different from Eclipse. It may hold its own default and cause 
- *      file read probelms and further problems. Sorry for the limitations.
- *      And thank you for your understanding!
+ *      file read probelms and further problems. More info about IDE: Ant.
+ *      Sorry for the limitations. And thank you for your understanding!
  * Lib/JAR: postgresql-8.3-604.jdbc4.jar; 
  *          commons-lang3-3.10.jar; 
  *          java-json.jar; 
@@ -70,9 +70,7 @@ public class Processor {
     private static String USER;
     private static String PWD;
     private static String URL;
-    
-    
-    
+
     /*
      * For the optimazation struct.
      */
@@ -116,7 +114,10 @@ public class Processor {
     BufferedWriter bw;
     
     /*
-     * For write the code.
+     * initialize the processor.
+     * Here I default the Processor() to be mine connection;
+     * But the Processor(String USER, String PWD, String URL) is mainly used 
+     * in running tests.
      */
     public Processor(){
         this("postgres", "m8kimmWhyholly", "jdbc:postgresql://localhost:5432/postgres");
@@ -127,7 +128,13 @@ public class Processor {
         this.PWD = PWD;
         this.URL = URL;
     }
-
+    
+    /*
+     * For read the input(*.sql and *json):
+     * If the input is sql, call the sqlParser(in SQLParser) to parse to *.json 
+     * and  call readInputFromJSON(String fileName) process;
+     * If the input is json, readInputFromJSON(String fileName) to process;
+     */
     public void readInput(String fileName){
         try{
             if(fileName.endsWith("json")){
@@ -145,37 +152,66 @@ public class Processor {
         }
     }
     
+    /*
+     * For read the input(*.json):
+     * After read the json, the PhiStruct will record the six ops 
+     * and opt will obtain the order list optimization.
+     */
     public void readInputFromJSON(String fileName){
         String tempOutPath = "./src/outputFile/GeneratedCodeFor" + fileName;
         this.outputPath = (tempOutPath.substring(0, tempOutPath.length() - 4) + "java");
         File inputJSON = new File("./src/inputFile/" + fileName);
         JSONObject j = null;
         try{
+            /*
+             * Read whole file from *.json and format to JSONObject to j
+             */
             String jStr = FileUtils.readFileToString(inputJSON, StandardCharsets.UTF_8);
             j = new JSONObject(jStr);
 
+            /*
+             * Get the projAttrs from JSONObject 
+             * ==> projectedAttributes in the PhiStruct (List<String>)
+             */
             List<String> projectedAttributes = new ArrayList<>();
             for(int i = 0; i < j.getJSONArray("projAttrs").length(); i++){
                 projectedAttributes.add(j.getJSONArray("projAttrs").getString(i));
             }
+            /*
+             * Get the numOfGVars from JSONObject 
+             * ==> numOfGVars in the PhiStruct (int)
+             */
             Integer numOfGVars = (Integer) j.get("numOfGVars");
             List<String> gAttributes = new ArrayList<>();
             String gAttrStr = (String) j.get("gAttrs");
-//            gAttributes = Arrays.asList(gAttrStr.split(","));
             for(String attr: gAttrStr.split(",")){
                 gAttributes.add(attr.trim());
             }
-
+            /*
+             * Get the aggFuncs from JSONObject 
+             * ==> aggregateFuncs in the PhiStruct (List<Group>) 
+             * it will be auto parsed when initialization.
+             */
             List<String> aggregateFuncs = new ArrayList<>();
             for(int i = 0; i < j.getJSONArray("aggFuncs").length(); i++){
                 aggregateFuncs.add(j.getJSONArray("aggFuncs").getString(i));
             }
+            /*
+             * Get the condOfGVars from JSONObject 
+             * ==> predicateOfGVars in the PhiStruct (List<String>)
+             */
             List<String> predicateOfGVars = new ArrayList<>();
             for(int i = 0; i < j.getJSONArray("condOfGVars").length(); i++){
                 predicateOfGVars.add(j.getJSONArray("condOfGVars").getString(i));
             }
+            /*
+             * Get the condOfHaving from JSONObject 
+             * ==> predicateOfHaving in the PhiStruct (String)
+             */
             String predicateOfHaving = (String) j.get("condOfHaving"); 
-            
+            /*
+             * initialze the PhiStruct for this processor
+             */
             oneStruct = new PhiStruct(  projectedAttributes, 
                                         numOfGVars, 
                                         gAttributes,
@@ -183,6 +219,9 @@ public class Processor {
                                         predicateOfGVars, 
                                         predicateOfHaving);
 
+            /*
+             * do topoSort to create the opt order list
+             */
             opt.topoSort(oneStruct.getNumOfGV(), j.getJSONArray("Opt"));
 
         }catch(Exception e){
@@ -191,26 +230,32 @@ public class Processor {
         return;
     }
     
+    /*
+     * Write the MFstruct in the generated code
+     */
     public void writeStruct(){
         List<String> name = new ArrayList<>();
         List<String> type = new ArrayList<>();
         try{
+            /*
+             * Get what need to be put in the MFStrcuts from Phistruct
+             */
             for(String attr: oneStruct.getG_ATTR()){
                 String originType = nameToType.get(attr);
                 String typeTemp = CONSTANTS.dbTypeToJavaType.get(originType);
-//                String typeTemp = nameToType.get(attr);
                 bw.write(Tab(2) + typeTemp + " " + attr +";");
                 bw.newLine();
                 name.add(attr);
                 type.add(originType);
             }
             bw.flush();
-
+            /*
+             * write para in the MFsrtuct
+             */
             for(Group body: oneStruct.getAggFunc()){
                 String attr = body.aggType + "_" + body.sub + "_" + body.attr;
                 String originType = CONSTANTS.AGG_FUNCS_TO_TYPE.get(body.aggType);
                 String typeTemp = CONSTANTS.dbTypeToJavaType.get(originType);
-//                System.out.println(originType+"=>"+typeTemp+"=>"+attr);
                 bw.write(Tab(2) + typeTemp + " " + attr +";");
                 bw.newLine();
                 name.add(attr);
@@ -221,6 +266,9 @@ public class Processor {
             bw.newLine();
             bw.newLine();
             bw.flush();
+            /*
+             * init the value of the para in the MFsrtuct
+             */
             for(int i = 0; i < name.size(); i++){
                 if(name.get(i).startsWith("count")){
                     bw.write(Tab(4) + name.get(i) + " = 0L" + ";");
@@ -240,6 +288,11 @@ public class Processor {
         }
     }
     
+    /*
+     * Setup the database connection info in the generated code
+     * Also write the connect() and close() function in the code.
+     * Also setup the main in the generated code
+     */
     public void writeDBConnetionSetup(){
         try{
             bw.write(Tab(1) + "private static final String USER = \"" + this.USER + "\";\n");
@@ -253,19 +306,36 @@ public class Processor {
             e.printStackTrace();
         }
     }
-    //use for group by 
+    
+    /*
+     * Write the first scan: 
+     * collect the data for the attributes in MFstruct;
+     * also updates the aggeration functions for the grouping variable 0 based 
+     * on the condition(where);
+     */
     public void firstScan(){
         try{
+
             List<String> g_Attrs = oneStruct.getG_ATTR();
-            writeFromSample(72, 88);
+            writeFromSample(72, 78);
+            
+            bw.write(Tab(3) + "///////////////First Scan////////////");
+            bw.newLine();
+            bw.flush();
+            
+            writeFromSample(79, 88);
             String generalCond = oneStruct.getCond_GV().get(0);
             generalCond = generalCond.equals("") ? "true": generalCond;
             bw.write(Tab(4) + (generalCond.equals("_")? "if(true)": generalCond) + " {");
             bw.newLine();
-    //        String key = "" + rstm.getString("prod") + rs.getInt("month");
+
+            /*
+             * Create HashMap for the MFstruct:
+             * key: the combination of grouping attributes; 
+             * value: the corresponding MFstruct.
+             */
             String st = "String key = \"\" ";
             for(String attr: g_Attrs){
-//                System.out.println(attr+"////////////////");
                 String type = CONSTANTS.dbTypeToJavaType.get(nameToType.get(attr));
                 type = type.equals("String") ? "String": "Int";
                 st += "+ rstm.get" + type + "(\"" + attr + "\")";
@@ -276,7 +346,6 @@ public class Processor {
             for(String attr: g_Attrs){
                 String type = CONSTANTS.dbTypeToJavaType.get(nameToType.get(attr));
                 type = type.equals("String") ? "String": "Int";
-//                st += "+ rstm.get" + type + "(\"" + attr + "\")";
                 String defSt = "newStrcut.";
                 defSt += attr + " = ";
                 defSt += "rstm.get" + type + "(\"" + attr + "\")";
@@ -284,11 +353,14 @@ public class Processor {
                 bw.newLine();
                 bw.flush();
             }
+            
+            /*
+             * init the value of MFstruct for grouping variable 0
+             */
             writeFromSample(94, 96);
             bw.write(Tab(5) + "MFStruct curStruct = structList.get(key);");
             bw.newLine();
             for(Group aF: oneStruct.getAggFunc()){
-//                System.out.println(aF.aggType + aF.attr + aF.sub);
                 String curType = aF.aggType;
                 String curAttr = aF.attr;
                 String curSub = aF.sub;
@@ -360,9 +432,14 @@ public class Processor {
 
     }
     
+    /* 
+     * Write the other scans: 
+     * updates the aggeration functions for other
+     * grouping variable based on the conditions(where and such that);
+     */
     public void otherScans(){
         try{
-            bw.write("///////////////Other Scan////////////");
+            bw.write(Tab(3) + "///////////////Other Scan(s)////////////");
             bw.flush();
             bw.newLine();
             bw.write(Tab(3) + "int count = " + opt.cnt +";");
@@ -374,18 +451,24 @@ public class Processor {
             List<String> cond_Gv = oneStruct.getCond_GV();
 
             int count = 0;
-
+            /*
+             * updates the value of MFstruct for other grouping variables
+             */
             while(count  < opt.cnt){
 
                 bw.write(Tab(7) +"case " + (count + 1) + ":");
                 bw.newLine();
+                
+                /*
+                 * updates according to the opt list
+                 */
                 List<Integer> preList = iter.next();
+                
                 for(int val: preList){
                     
                     bw.write(Tab(8) + cond_Gv.get(val) + "{");
                     bw.newLine();
                     for(Group aF: oneStruct.getAggFunc()){
-//                        System.out.println(aF.aggType + aF.attr + aF.sub);
                         String curType = aF.aggType;
                         String curAttr = aF.attr;
                         String curSub = aF.sub;
@@ -457,10 +540,20 @@ public class Processor {
         }
     }
     
-    
+    /* 
+     * Write print out: 
+     * walk through the HashMap to print the table
+     * String left aligned; number right aligned
+     */
     public void printResult(){
         try{
+            bw.write(Tab(3) + "///////////////Print Out////////////");
+            bw.newLine();
+            bw.flush();
             final int len = oneStruct.getProjATTR().size();
+            /* 
+             * Write print out for the title: 
+             */
             for(int i = 0; i < len; i++){
                 if(i == len - 1){
                     if(oneStruct.getProjATTR().get(i).startsWith("avg")
@@ -476,7 +569,6 @@ public class Processor {
                         writeCode(Tab(3) + "System.out.printf(\"%-12s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
                     }else{
                         writeCode(Tab(3) + CONSTANTS.PRINT_LAST_ATTR_MAP.get(nameToType.get(oneStruct.getProjATTR().get(i))) + oneStruct.getProjATTR().get(i) + "\");");
-//                        writeCode(Tab(3) + "System.out.printf(\"%-7s  \\n\", \"" + oneStruct.getProjATTR().get(i) + "\");");
                     }
                     break;
                 }
@@ -498,6 +590,9 @@ public class Processor {
             }
             writeFromSample(114, 115);
 
+            /* 
+             * Write print out for values: 
+             */
             bw.write(Tab(4) + (oneStruct.getCond_Having().equals("_")
                                             ? "if(true)"
                                             : oneStruct.getCond_Having()) 
@@ -527,7 +622,9 @@ public class Processor {
         }
 
     }
-
+    /* 
+     * Supporting function on setup. 
+     */
     public void createFile(){
         try{
             File file = new File(outputPath);
@@ -543,7 +640,9 @@ public class Processor {
             e.printStackTrace();
         }
     }
-    
+    /* 
+     * Supporting function for write the code.
+     */
     private void writeCode(String codeLine){
         try{
             bw.write(codeLine);
@@ -554,7 +653,9 @@ public class Processor {
             System.out.println(e);
         }
     }
-    
+    /* 
+     * Supporting function for write from the sample text.
+     */
     private void writeFromSample(int startLine, int endLine){
         int count = 0;
         try{
@@ -562,7 +663,6 @@ public class Processor {
             while(tempS.hasNextLine()){
                 count++;
                 String temp = tempS.nextLine();
-//                System.out.println(temp);
                 if(count >= startLine && count <= endLine){
                     writeCode(temp);
                 }
@@ -571,11 +671,16 @@ public class Processor {
             System.out.println(e);
         }
     }
+    /* 
+     * Small function on creating Tab in the code 
+     */
     private String Tab(int n){
         return new String(new char[n * 4]).replace("\0", " ");
     } 
     
-    
+    /* 
+     * create the nameToType
+     */
     public void getTypeFromDB(){
         try{
             conn = DriverManager.getConnection(URL, USER, PWD);
@@ -592,29 +697,29 @@ public class Processor {
     }
             
             
-    public static void main(String[] args){
-        String USER = "postgres";
-        String PWD = "m8kimmWhyholly";
-        String URL = "jdbc:postgresql://localhost:5432/postgres";
-        Processor p = new Processor(USER, PWD, URL);
-        
-        String fileName = "tempSQL.sql";
-
-        p.getTypeFromDB();
-//        System.out.println("DBTHING DONE");
-        p.readInput(fileName);
-//        System.out.println("CreateFile");
-        p.createFile();
-//        System.out.println("CreateFile");
-        p.writeStruct();
-//        System.out.println("writeFile");
-        p.writeDBConnetionSetup();
-        p.firstScan();
-//        System.out.println("FirstScan");
-        p.otherScans();
-//        System.out.println("OtherScan");
-        p.printResult();
-//        System.out.println("OtherScan");
-            
-    }
+//    public static void main(String[] args){
+//        String USER = "postgres";
+//        String PWD = "m8kimmWhyholly";
+//        String URL = "jdbc:postgresql://localhost:5432/postgres";
+//        Processor p = new Processor(USER, PWD, URL);
+//        
+//        String fileName = "tempSQL.sql";
+//
+//        p.getTypeFromDB();
+////        System.out.println("DBTHING DONE");
+//        p.readInput(fileName);
+////        System.out.println("CreateFile");
+//        p.createFile();
+////        System.out.println("CreateFile");
+//        p.writeStruct();
+////        System.out.println("writeFile");
+//        p.writeDBConnetionSetup();
+//        p.firstScan();
+////        System.out.println("FirstScan");
+//        p.otherScans();
+////        System.out.println("OtherScan");
+//        p.printResult();
+////        System.out.println("OtherScan");
+//            
+//    }
 }

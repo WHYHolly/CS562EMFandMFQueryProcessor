@@ -1,15 +1,10 @@
 /*
  * @author Hangyu Wang (CWID: 10444246)
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This is SQL Parser.
+ * Here a SQL will be parsed into JSON
  */
 package SQLParser;
 
-/**
- *
- * @author Hangyu Wang
- */
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,11 +47,13 @@ public class SQLParser {
     private List<String> varToNum = new ArrayList<>();
     private sixOperators sixOps;
     private Matcher m = null;
+    
     public SQLParser(String USER, String PWD, String URL){
         this.USER = USER;
         this.PWD = PWD;
         this.URL = URL;
     }
+    
     void generalParser(){
         this.m = p.matcher(this.sql);
         while(m.find()){
@@ -89,7 +86,7 @@ public class SQLParser {
                         sixOps.setOpt(null);
                     }else{
                         clauseToParser.get("suchthat").parseClause(nameToType, varToNum, aggFuns);
-                        System.out.println(clauseToParser.get("suchthat").getParsedClause());
+//                        System.out.println(clauseToParser.get("suchthat").getParsedClause());
                         sixOps.setCondOfGVars((List<String>) clauseToParser.get("suchthat").getParsedClause());
                         sixOps.setOpt(clauseToParser.get("suchthat").getGraph());
                     }
@@ -100,7 +97,6 @@ public class SQLParser {
                     break;
                 case "where":{
                     clauseToParser.get("where").parseClause(nameToType, varToNum, aggFuns);
-//                    System.out.println("Here is the where!!!" + clauseToParser.get("where").getParsedClause());
                     List<String> tempList = (List<String>) clauseToParser.get("where").getParsedClause();
                     if(tempList.size() == 0){
                         List<String> conds = new ArrayList<>();
@@ -157,11 +153,11 @@ public class SQLParser {
         return j;
     }
     
+    
     public void performSQLParser(String fromFile, String toFile){
         File inputSQl = new File("./src/inputFile/" + fromFile);
         try{
             String sql = FileUtils.readFileToString(inputSQl, StandardCharsets.UTF_8);
-
             File newfile = new File("./src/inputFile/" + toFile);
             FileWriter p = new FileWriter("./src/inputFile/" + toFile);
             this.sql = sql;
@@ -169,8 +165,6 @@ public class SQLParser {
             this.initParser();
             p.write(this.getJSONFormat().toString());
             p.flush();
-//            System.out.println(this.getJSONFormat().toString());
-
         }catch(IOException e){
             System.out.println("Your SQL CANNOT be parsed. Please make sure you enter the right EMF SQL!\nAnd in the right location!");
             e.printStackTrace();
@@ -178,13 +172,13 @@ public class SQLParser {
     
     }
     
-    public static void main(String[] args){
-        String USER ="postgres";
-        String PWD ="m8kimmWhyholly";
-        String URL ="jdbc:postgresql://localhost:5432/postgres";
-        
-        SQLParser pTest = new SQLParser(USER, PWD, URL);
-        pTest.performSQLParser("sql4.sql", "input4.json");
-    }
+//    public static void main(String[] args){
+//        String USER ="postgres";
+//        String PWD ="m8kimmWhyholly";
+//        String URL ="jdbc:postgresql://localhost:5432/postgres";
+//        
+//        SQLParser pTest = new SQLParser(USER, PWD, URL);
+//        pTest.performSQLParser("sql4.sql", "input4.json");
+//    }
 }
 

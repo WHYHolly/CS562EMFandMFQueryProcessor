@@ -149,6 +149,7 @@ public class CodeGenerator {
         String outputPath = "./src/inputFile/";
         Scanner input = new Scanner(System.in);
         while(loop){
+            System.out.println();
             System.out.println(instruction);
             try{
                 int ID = input.nextInt();
@@ -164,9 +165,9 @@ public class CodeGenerator {
                         break;
                     case 1:
                         for(String sql: SQLList){
-                            System.out.println("For " + sql + ":");
+                            System.out.println("/////////////////Generating Code/////////////////");
+                            System.out.println("// For " + sql + "");
                             Processor p = new Processor(USER, PWD, URL);
-                            Integer test = null;
 
                             p.getTypeFromDB();
                             p.readInput(sql);
@@ -177,8 +178,10 @@ public class CodeGenerator {
                             p.otherScans();
                             p.printResult();
 
-                            System.out.println("DONE!");
+                            System.out.println("//////////////////////DONE!//////////////////////");
                         }
+                        System.out.println("******************* All DEMO are generated *******************");
+                        System.out.println("*********** Please go to outputFile folder to check ***********");
                         break;
                     case 2:
                         System.out.println(SQLInstruction);
@@ -197,9 +200,8 @@ public class CodeGenerator {
                             outSQL.flush();
                         }
                         System.out.println("/////////////////SQL ends/////////////////");
-                        System.out.println("YOUR SQL FILE IS READY!");
+                        System.out.println("YOUR SQL FILE IS READY!(tempSQL.sql)");
                         outSQL.close();
-                        System.out.println("For " + "tempSQL.sql" + ":");
                         Processor pTempSQL = new Processor(USER, PWD, URL);
 
                         pTempSQL.getTypeFromDB();
@@ -211,13 +213,15 @@ public class CodeGenerator {
                         pTempSQL.otherScans();
                         pTempSQL.printResult();
 
-                        System.out.println("DONE!");
+                        System.out.println("******************* Your code is generated *******************");
+                        System.out.println("*********** Please go to outputFile folder to check ***********");
                         break;
                     case 3:
                         System.out.println(JSONInstruction);
                         Scanner jsonInput = new Scanner(System.in);
                         File fileJSON = new File(outputPath + "tempJSON" + ".json");
                         PrintWriter outJSON = new PrintWriter(fileJSON);
+                        System.out.println("/////////////////JSON starts/////////////////");
                         while(jsonInput.hasNextLine()){
                             String line = jsonInput.nextLine();
                             if(line.equals("END")){
@@ -226,9 +230,10 @@ public class CodeGenerator {
                             outJSON.println(line);
                             outJSON.flush();
                         }
-                        System.out.println("YOUR JSON FILE IS READY!");
+                        System.out.println("/////////////////JSON ends/////////////////");
+                        System.out.println("YOUR JSON FILE IS READY!(tempJSON.json)");
                         outJSON.close();
-                        System.out.println("For " + "tempJSON.json" + ":");
+//                        System.out.println("For " + "tempJSON.json" + ":");
                         Processor pTempJSON = new Processor(USER, PWD, URL);
 
                         pTempJSON.getTypeFromDB();
@@ -240,7 +245,8 @@ public class CodeGenerator {
                         pTempJSON.otherScans();
                         pTempJSON.printResult();
 
-                        System.out.println("DONE!");
+                        System.out.println("******************* Your code is generated *******************");
+                        System.out.println("*********** Please go to outputFile folder to check ***********");
                         break;
                 }
             }catch(Exception e){

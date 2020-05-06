@@ -1,3 +1,3 @@
-select cust
+select prod, quant, month
 from sales
-group by cust
+group by prod, quant, month
