@@ -1,14 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @author Hangyu Wang (CWID: 10444246)
+ * 
+ * 
+ * 
  */
 package QueryProcessorForMFandEMF;
 
-/**
- *
- * @author Hangyu Wang
- */
 import java.util.*;
 import utils.CONSTANTS;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -45,9 +42,9 @@ public class Parser {
         }
         return str.contains("/")? "(double) " + res.toString(): res.toString();
     }
-    
-    
-    public static void main(String[] args){
-        System.out.println(formatExpWithAggFunc("sum_0_quant"));
-    }
+//    
+//    
+//    public static void main(String[] args){
+//        System.out.println(formatExpWithAggFunc("sum_0_quant"));
+//    }
 }

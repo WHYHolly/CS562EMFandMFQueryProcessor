@@ -1,4 +1,5 @@
 /*
+ * @author Hangyu Wang (CWID: 10444246)
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -68,14 +69,14 @@ public class parserSuchThat extends partialParser{
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-                System.out.println(edge);
+//                System.out.println(edge);
                 graph.put(edge);
             }
             to++;
         }
     }
 
-//    @Override
+    @Override
     public List<String> getParsedClause(){
         return this.condsList;
     }
@@ -91,15 +92,4 @@ public class parserSuchThat extends partialParser{
         }
         return res;
     }
-//    
-//    public static void main(String[] args){
-//       String sql = "x.state = \"NY\",\n" +
-//                        "          y.state = \"NJ\",\n" +
-//                        "          z.state = \"NJ\"\n";
-//       parserSuchThat parser = new parserSuchThat(sql);
-//       
-//       parser.parseClause();
-//       
-//       System.out.println(parser);
-//    }
 }

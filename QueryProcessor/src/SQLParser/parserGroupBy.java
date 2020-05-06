@@ -1,14 +1,11 @@
 /*
+ * @author Hangyu Wang (CWID: 10444246)
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package SQLParser;
 
-/**
- *
- * @author Holly
- */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -59,12 +56,12 @@ public class parserGroupBy extends partialParser{
     @Override
     public List<String> getParsedClause(){
             return listofAttrs;
-    
     }
     
     public int getNumofG(){
         return numOfGV;
     }
+    
     public String getGAttributes(){
         return gAttrs;
     }
@@ -75,9 +72,4 @@ public class parserGroupBy extends partialParser{
                 + "And the list of variables: " + this.getParsedClause();
     
     }
-//    public static void main(String[] args){
-//        parserGroupBy parser = new parserGroupBy("cust, prod");
-//        parser.parseClause();
-//        System.out.println(parser);
-//    }
 }

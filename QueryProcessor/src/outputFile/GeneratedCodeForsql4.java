@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * @author Hangyu Wang (CWID: 10444246)
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -7,7 +7,7 @@ package outputFile;
 
 /**
  *
- * @author Hangyu Wang
+ * 
  */
 import java.util.*;
 import java.io.*;
@@ -59,7 +59,7 @@ public class GeneratedCodeForsql4{
     void connect(){
         try{
             Class.forName("org.postgresql.Driver");     //Loads the required driver
-            System.out.println("Success loading Driver!");
+            //System.out.println("Success loading Driver!");
         }catch(Exception exception){
             System.out.println("Fail loading Driver!");
             exception.printStackTrace();
@@ -87,7 +87,7 @@ public class GeneratedCodeForsql4{
     void retreive(){
         try{
             Connection con = DriverManager.getConnection(URL, USER, PWD);    //connect to the database using the password and username
-            System.out.println("Success connecting server!");
+            //System.out.println("Success connecting server!");
             ResultSet rstm = null;
             PreparedStatement pstm = null;
             String ret = "select * from sales";

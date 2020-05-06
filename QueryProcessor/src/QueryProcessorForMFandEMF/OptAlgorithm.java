@@ -1,14 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @author Hangyu Wang (CWID: 10444246)
+ * This is a part that for optimizing the algorithm.
+ * Basic idea: by using the relation for grouping variables, to create graph
+ *             and test the order. (topological sort)
  */
 package QueryProcessorForMFandEMF;
-
-/**
- *
- * @author Hangyu Wang
- */
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +19,7 @@ public class OptAlgorithm {
     public int cnt;
     public List<List<Integer>> order;
     
-     public void topoSort(int num, JSONArray preRequisites){
+    public void topoSort(int num, JSONArray preRequisites){
         boolean[] visited = new boolean[num + 1];
         visited[0] = true;
         List<List<Integer>> order = new ArrayList<>();
@@ -68,13 +64,9 @@ public class OptAlgorithm {
                     }
                 }
             }
-//            System.out.println(list);
             order.add(list);
         }
-        
         cnt = order.size();
         this.order = order;
-//        System.out.println(cnt);
-//        System.out.println(order);
     }
 }

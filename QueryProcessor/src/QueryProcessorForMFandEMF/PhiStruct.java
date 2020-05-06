@@ -1,14 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @author Hangyu Wang (CWID: 10444246)
+ * This is a struct that made for the Query Processor.
+ * To fetch the data in a easier way instead of read the json once an donce again.
+ * And here records the 6 ops.
  */
 package QueryProcessorForMFandEMF;
 
-/**
- *
- * @author Hangyu Wang
- */
 import java.util.*;
 import utils.Group;
 
@@ -19,7 +16,10 @@ public class PhiStruct {
     private List<Group> aggregateFuncs;
     private List<String> predicateOfGVars;
     private String predicateOfHaving; 
-
+    
+    /*
+     * initial of the struct
+     */
     PhiStruct(List<String> projectedAttributes, Integer numOfGVars,
              List<String> gAttributes, List<String> aggregateFuncs, 
              List<String> predicateOfGVars, String predicateOfHaving){
@@ -27,15 +27,22 @@ public class PhiStruct {
         this.numOfGVars = numOfGVars;
         this.gAttributes = gAttributes;
         this.aggregateFuncs = new ArrayList<>();
+        /*
+         * To make the aggaregation functions easier to use,
+         * here I use the Group struct I made to store.
+         * So in the code, the agg id, agg type and attr type can be easily obtained.
+         */
         for(String str: aggregateFuncs){
             String[] tempArr = str.split("_");
-//            System.out.println(Arrays.toString(tempArr));
             this.aggregateFuncs.add(new Group(tempArr[1], tempArr[0], tempArr[2]));
         }
         this.predicateOfGVars = predicateOfGVars;
         this.predicateOfHaving = predicateOfHaving;
     }
     
+    /*
+     * The functions to get the stored ops.
+     */
     public List<String> getProjATTR(){
         return projectedAttributes;
     }

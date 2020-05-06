@@ -1,4 +1,5 @@
 /*
+ * @author Hangyu Wang
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -117,7 +118,7 @@ public class expParser{
     
     public static String parserCond(String cond, Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns, List<Integer> fromList, Set<String> selfAggFuncs){
         String temp = cond;
-        System.out.println(cond);
+//        System.out.println(cond);
         for(String op: CONSTANTS.OP_LIST){
             temp = temp.replace(op, " " + op + " ");
         }
@@ -144,7 +145,7 @@ public class expParser{
                     if(NumberUtils.isParsable(str) || (str.startsWith("'") && str.endsWith("'"))){
                         tempExp.push(str);
                         if(str.startsWith("'") && str.endsWith("'")){
-                            System.out.println("Here 1");
+//                            System.out.println("Here 1");
                             StringCmb(tempExp);
                         }
                         
@@ -161,7 +162,7 @@ public class expParser{
                             if(CONSTANTS.dbTypeToJavaType.get(attrToType.get(para[1])).equals("String")){
                                 if(!tempExp.isEmpty() && CONSTANTS.CMP_OP_LIST.contains(tempExp.peek())){
                                     tempExp.push("rstm.getString(\"" + para[1] +"\")");
-                                    System.out.println("Here 2");
+//                                    System.out.println("Here 2");
                                     StringCmb(tempExp);
                                 }else{
                                     tempExp.push("rstm.getString(\"" + para[1] +"\")");
@@ -221,7 +222,7 @@ public class expParser{
                             }
                             if( !DBType.equals("*") && CONSTANTS.dbTypeToJavaType.get(attrToType.get(DBType)).equals("String") 
                                 && !tempExp.isEmpty() && CONSTANTS.CMP_OP_LIST.contains(op)){
-                                System.out.println("Here 3");
+//                                System.out.println("Here 3");
 //                                StringCmb(tempExp);
                             }
                             i = i + 3;
@@ -230,8 +231,8 @@ public class expParser{
                             if(CONSTANTS.dbTypeToJavaType.get(attrToType.get(str)).equals("String") 
                                && !tempExp.isEmpty() && CONSTANTS.CMP_OP_LIST.contains(tempExp.peek())){
                                 tempExp.push("curStruct." + str);
-                                System.out.println("Here 4");
-                                System.out.println("curStruct." + str);
+//                                System.out.println("Here 4");
+//                                System.out.println("curStruct." + str);
                                 StringCmb(tempExp);
                             }else{
                                 tempExp.push("curStruct." + str);
@@ -263,9 +264,9 @@ public class expParser{
 //            String right = stack.pop();
 //            String op = stack.pop();
 //            String left = stack.pop();
-            System.out.println(right);
-            System.out.println(op);
-            System.out.println(left);
+//            System.out.println(right);
+//            System.out.println(op);
+//            System.out.println(left);
             switch(op){
                 case "=":
                     stack.push(left + ".compareTo(" + right + ") == 0");

@@ -1,14 +1,53 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @author Hangyu Wang (CWID: 10444246)
+ * =============================================================================
+ * This is the core part of the query processor.
+ * Env: Here everything is built and run on Netbeans 8.2. 
+ *      Better to use the Netbeans 8.2 to run my codes. Since the IDE is 
+ *      different from Eclipse. It may hold its own default and cause 
+ *      file read probelms and further problems. Sorry for the limitations.
+ *      And thank you for your understanding!
+ * Lib/JAR: postgresql-8.3-604.jdbc4.jar; 
+ *          commons-lang3-3.10.jar; 
+ *          java-json.jar; 
+ *          commons-io-2.6.jar; 
+ *          JDK 1.8(java 8)
+ * To keep consistency, I put all the *.jar in the folder JARS. 
+ * =============================================================================
+ * How to run:
+ * -----------------------------------------------------------------------------
+ * => For a brief run(only run based on the existing *.sql and *.json):
+ * 1. You can uncomment the main in this file;
+ * 2. Update the USER, PWD, URL to yours;
+ * 3. Update the fileName to yours (*.sql or *.json);
+ * PS. the tested file (*.sql or *.json) should be put into the inputFile folder;
+ *     and you need to ensure the correctness of your input.
+ * -----------------------------------------------------------------------------
+ * => For a general run:
+ * 1. Please go to the CodeGenerator.java;
+ * 2. Update the USER, PWD, URL to yours;
+ * 3. Update the SQLList to yours. Actually you can also put the name of *.json 
+ *    in it;
+ * 4. Here you can also input your own sql and json via run view based on the 
+ *    instruction. (see more detials and format requirement in the 
+ *    CodeGenerator.java and the instruction when you start running the code)
+ * PS. the tested file (*.sql or *.json) in the SQLList should be put into the 
+ *     inputFile folder; and you need to ensure the correctness of your input.
+ * =============================================================================
+ * Algorithm and Implementation:
+ * It is a idea about how to write the generated code.
+ * 1. Write the MFStruct for the code based one the grouping attributes and 
+ *    aggeration function.
+ * 2. Write the first scan: collect the data for the attributes in MFstruct;
+ *    also updates the aggeration functions for the grouping variable 0 based 
+ *    on the condition(where);
+ * 3. Write the other scans: updates the aggeration functions for other
+ *    grouping variable based on the conditions(where and such that);
+ * 4. Write the code of output(select).
+ * PS. For the point 3, I also use the topological sort for optimization.
  */
 package QueryProcessorForMFandEMF;
-//package utils;
-/**
- *
- * @author Hangyu Wang
- */
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.apache.commons.io.FileUtils;
@@ -17,7 +56,7 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
-import utils.PreReq;
+//import utils.PreReq;
 import QueryProcessorForMFandEMF.Parser;
 import QueryProcessorForMFandEMF.OptAlgorithm;
 import SQLParser.SQLParser;
@@ -31,29 +70,58 @@ public class Processor {
     private static String USER;
     private static String PWD;
     private static String URL;
-    private final static String SPACE = " ";
     
-    private String outputFile = "";
     
+    
+    /*
+     * For the optimazation struct.
+     */
     private OptAlgorithm opt = new OptAlgorithm();
+    
+    /*
+     * For the connection of the database. 
+     * And use the nameToType to record the name of attributes to type of it.
+     * All info get from the actual DataBase.
+     */
     private PreparedStatement ps = null;
     private Connection conn = null;
     private ResultSet rs = null;
-    
     private Map<String, String> nameToType = new HashMap<>();
 
+    /*
+     * For record the six ops.
+     */
     private PhiStruct oneStruct;
 
+    /*
+     * For output inforamtions:
+     * outputPath => the path for the generated code. 
+     * eg. ./src/outputFile/GeneratedCodeForsql1.java
+     * outputFile => the name info for the generated code. 
+     * eg. ./src/outputFile/GeneratedCodeFor{outputFile}.java
+     * also used for other info relating to code generation.
+     */
     private String outputPath;
+    private String outputFile = "";
 
+    /*
+     * Template of the generated codes.
+     */
     private final String samplePath = "./src/utils/codeSample.txt";
-    File sampleFile;
+    
+    /*
+     * For write the code.
+     */
     FileWriter fw;
     BufferedWriter bw;
     
+    /*
+     * For write the code.
+     */
     public Processor(){
         this("postgres", "m8kimmWhyholly", "jdbc:postgresql://localhost:5432/postgres");
     }
+    
     public Processor(String USER, String PWD, String URL){
         this.USER = USER;
         this.PWD = PWD;
@@ -80,12 +148,10 @@ public class Processor {
     public void readInputFromJSON(String fileName){
         String tempOutPath = "./src/outputFile/GeneratedCodeFor" + fileName;
         this.outputPath = (tempOutPath.substring(0, tempOutPath.length() - 4) + "java");
-//        File inputSQl = new File("./src/SQLFile/sql1.sql");
         File inputJSON = new File("./src/inputFile/" + fileName);
         JSONObject j = null;
         try{
             String jStr = FileUtils.readFileToString(inputJSON, StandardCharsets.UTF_8);
-//            System.out.println(jStr);
             j = new JSONObject(jStr);
 
             List<String> projectedAttributes = new ArrayList<>();
@@ -155,9 +221,6 @@ public class Processor {
             bw.newLine();
             bw.newLine();
             bw.flush();
-//            System.out.println("/////////////");
-//            System.out.println(name);
-//            System.out.println(type);
             for(int i = 0; i < name.size(); i++){
                 if(name.get(i).startsWith("count")){
                     bw.write(Tab(4) + name.get(i) + " = 0L" + ";");
@@ -194,8 +257,6 @@ public class Processor {
     public void firstScan(){
         try{
             List<String> g_Attrs = oneStruct.getG_ATTR();
-//            System.out.println("in the first");
-//            System.out.println(g_Attrs);
             writeFromSample(72, 88);
             String generalCond = oneStruct.getCond_GV().get(0);
             generalCond = generalCond.equals("") ? "true": generalCond;
@@ -305,19 +366,17 @@ public class Processor {
             bw.flush();
             bw.newLine();
             bw.write(Tab(3) + "int count = " + opt.cnt +";");
-//            bw.write(Tab(3) + "int count = " + oneStruct.getNumOfGV()+";");
             bw.newLine();
             writeFromSample(101, 106);
             
 
             Iterator<List<Integer>> iter = opt.order.iterator();
             List<String> cond_Gv = oneStruct.getCond_GV();
-//            iter.next();
+
             int count = 0;
-//            int count 
+
             while(count  < opt.cnt){
-//                case
-//                System.out.println("Here is the condition: " + iter.next());
+
                 bw.write(Tab(7) +"case " + (count + 1) + ":");
                 bw.newLine();
                 List<Integer> preList = iter.next();
@@ -445,8 +504,6 @@ public class Processor {
                     + "{");
             bw.newLine();
             for(String attr: oneStruct.getProjATTR()){
-//                System.out.println("/////////");
-//                System.out.println(attr);
                 if(attr.startsWith("avg") 
                     || attr.contains("+") || attr.contains("-")
                     || attr.contains("*") || attr.contains("/")){
@@ -457,12 +514,7 @@ public class Processor {
                         || attr.startsWith("sum")){
                     writeCode(Tab(5) + "System.out.printf(\"%12s  \", " + Parser.formatExpWithAggFunc(attr) + ");");
                 }else{
-//                    CONSTANTS.PRINT_MAP.get(nameToType.get(Parser.formatExpWithAggFunc(attr)));
                     writeCode(Tab(5) + CONSTANTS.PRINT_MAP.get(nameToType.get(attr)) + Parser.formatExpWithAggFunc(attr) + ");");
-//                    System.out.println(attr);
-//                    System.out.println(nameToType.get(attr));
-//                    System.out.println(CONSTANTS.PRINT_MAP.toString());
-//                    writeCode(Tab(5) + CONSTANTS.PRINT_MAP.get(nameToType.get(Parser.formatExpWithAggFunc(attr))) + Parser.formatExpWithAggFunc(attr) + ");");
                 }
             }
             bw.write(Tab(5) + "System.out.println();\n");
@@ -545,11 +597,12 @@ public class Processor {
         String PWD = "m8kimmWhyholly";
         String URL = "jdbc:postgresql://localhost:5432/postgres";
         Processor p = new Processor(USER, PWD, URL);
-        Integer test = null;
+        
+        String fileName = "tempSQL.sql";
 
         p.getTypeFromDB();
 //        System.out.println("DBTHING DONE");
-        p.readInput("tempJSON.json");
+        p.readInput(fileName);
 //        System.out.println("CreateFile");
         p.createFile();
 //        System.out.println("CreateFile");

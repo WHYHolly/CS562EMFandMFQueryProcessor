@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * @author Hangyu Wang (CWID: 10444246)
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -7,7 +7,7 @@ package outputFile;
 
 /**
  *
- * @author Hangyu Wang
+ * 
  */
 import java.util.*;
 import java.io.*;
@@ -17,28 +17,10 @@ import java.util.*;
 public class GeneratedCodeFortempSQL{
     class MFStruct{
         String cust;
-        Long sum_1_quant;
-        Long count_1_quant;
-        Double avg_1_quant;
-        Long sum_2_quant;
-        Long count_2_quant;
-        Double avg_2_quant;
-        Long sum_3_quant;
-        Long count_3_quant;
-        Double avg_3_quant;
-        MFStruct(){
+            MFStruct(){
 
                 cust = "";
-                sum_1_quant = null;
-                count_1_quant = 0L;
-                avg_1_quant = null;
-                sum_2_quant = null;
-                count_2_quant = 0L;
-                avg_2_quant = null;
-                sum_3_quant = null;
-                count_3_quant = 0L;
-                avg_3_quant = null;
-        }
+            }
     }
     private static final String USER = "postgres";
     private static final String PWD = "m8kimmWhyholly";
@@ -61,7 +43,7 @@ public class GeneratedCodeFortempSQL{
     void connect(){
         try{
             Class.forName("org.postgresql.Driver");     //Loads the required driver
-            System.out.println("Success loading Driver!");
+            //System.out.println("Success loading Driver!");
         }catch(Exception exception){
             System.out.println("Fail loading Driver!");
             exception.printStackTrace();
@@ -89,7 +71,7 @@ public class GeneratedCodeFortempSQL{
     void retreive(){
         try{
             Connection con = DriverManager.getConnection(URL, USER, PWD);    //connect to the database using the password and username
-            System.out.println("Success connecting server!");
+            //System.out.println("Success connecting server!");
             ResultSet rstm = null;
             PreparedStatement pstm = null;
             String ret = "select * from sales";
@@ -103,7 +85,7 @@ public class GeneratedCodeFortempSQL{
             more = rstm.next();
             
             while(more){
-                if(rstm.getInt("year")==2004) {
+                if(true) {
                     String key = "" + rstm.getString("cust");
                     if(!structList.containsKey(key)){
                         MFStruct newStrcut = new MFStruct();
@@ -125,21 +107,6 @@ public class GeneratedCodeFortempSQL{
                     while(more){
                         switch(i){
                             case 1:
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("state").compareTo("NY") == 0) ){
-                                    curStruct.sum_1_quant = curStruct.sum_1_quant == null ? rstm.getInt("quant") : curStruct.sum_1_quant+rstm.getInt("quant");
-                                    curStruct.count_1_quant = curStruct.count_1_quant == null ? 1 : curStruct.count_1_quant + 1;
-                                    curStruct.avg_1_quant = (curStruct.sum_1_quant + 0.0)/curStruct.count_1_quant;
-                                }
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("state").compareTo("NJ") == 0) ){
-                                    curStruct.sum_2_quant = curStruct.sum_2_quant == null ? rstm.getInt("quant") : curStruct.sum_2_quant+rstm.getInt("quant");
-                                    curStruct.count_2_quant = curStruct.count_2_quant == null ? 1 : curStruct.count_2_quant + 1;
-                                    curStruct.avg_2_quant = (curStruct.sum_2_quant + 0.0)/curStruct.count_2_quant;
-                                }
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("state").compareTo("CT") == 0) ){
-                                    curStruct.sum_3_quant = curStruct.sum_3_quant == null ? rstm.getInt("quant") : curStruct.sum_3_quant+rstm.getInt("quant");
-                                    curStruct.count_3_quant = curStruct.count_3_quant == null ? 1 : curStruct.count_3_quant + 1;
-                                    curStruct.avg_3_quant = (curStruct.sum_3_quant + 0.0)/curStruct.count_3_quant;
-                                }
                             break;
                         }
                         more = rstm.next();  
@@ -147,17 +114,11 @@ public class GeneratedCodeFortempSQL{
                 }
             }
 
-            System.out.printf("%-7s  ", "cust");
-            System.out.printf("%-24s  ", "avg_1_quant");
-            System.out.printf("%-24s  ", "avg_2_quant");
-            System.out.printf("%-24s  \n", "avg_3_quant");
+            System.out.printf("%-7s  \n", "cust");
             for(MFStruct curStruct: structList.values()){
 //                MFStruct curStruct = keyToStruct.get(key);
-                if((curStruct.avg_2_quant!=null&&curStruct.avg_3_quant!=null&&curStruct.avg_1_quant!=null)?curStruct.avg_1_quant>curStruct.avg_2_quant&&curStruct.avg_1_quant>curStruct.avg_3_quant:false){
+                if(true){
                     System.out.printf("%-7s  ", curStruct.cust);
-                    System.out.printf("%24.16f  ", curStruct.avg_1_quant);
-                    System.out.printf("%24.16f  ", curStruct.avg_2_quant);
-                    System.out.printf("%24.16f  ", curStruct.avg_3_quant);
                     System.out.println();
                 }
 //                System.out.println();

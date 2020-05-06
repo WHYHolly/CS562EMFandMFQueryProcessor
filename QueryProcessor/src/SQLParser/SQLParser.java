@@ -1,4 +1,5 @@
 /*
+ * @author Hangyu Wang (CWID: 10444246)
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -13,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-
 
 import java.util.*;
 import java.util.regex.*;
@@ -50,11 +50,9 @@ public class SQLParser {
     }};
     private Map<String, String> nameToType = new HashMap<>();
     private List<String> varToNum = new ArrayList<>();
-//    private Map<String, String> nameToType = new HashMap<>();
     private sixOperators sixOps;
     private Matcher m = null;
     public SQLParser(String USER, String PWD, String URL){
-//        this.sql = sql;
         this.USER = USER;
         this.PWD = PWD;
         this.URL = URL;
@@ -62,15 +60,9 @@ public class SQLParser {
     void generalParser(){
         this.m = p.matcher(this.sql);
         while(m.find()){
-//            System.out.println("matched");
             for(String g: groupName){
-//                System.out.println(g + ":\n" + m.group(g));
                 if(m.group(g) != null){
-//                    System.out.println("////////////////////////");
-//                    System.out.println(g);
-//                    System.out.println(m.group(g));
                     clauseToParser.get(g).setSql(m.group(g));
-//                    System.out.println("////////////////////////");
                 }
             }
         }
@@ -110,7 +102,6 @@ public class SQLParser {
                     clauseToParser.get("where").parseClause(nameToType, varToNum, aggFuns);
 //                    System.out.println("Here is the where!!!" + clauseToParser.get("where").getParsedClause());
                     List<String> tempList = (List<String>) clauseToParser.get("where").getParsedClause();
-//                    System.out.println(tempList);
                     if(tempList.size() == 0){
                         List<String> conds = new ArrayList<>();
                         conds.add("_");
@@ -122,7 +113,6 @@ public class SQLParser {
                         List<String> conds = new ArrayList<>();
                         String cond0 = tempList.get(0);
                         conds.add("if(" + cond0 + ")");
-//                        System.out.println(sixOps.getCondOfGVars());
                         for(String c: sixOps.getCondOfGVars()){
                             conds.add("if(" + cond0 +" && "+ "(" + c +") )");
                         }
@@ -141,7 +131,6 @@ public class SQLParser {
             }
         }
         sixOps.setAggFuncs(expParser.parserFuncs(aggFuns));
-//        System.out.println(sixOps);
     }
     
     public sixOperators getSixOps(){
@@ -158,11 +147,9 @@ public class SQLParser {
             j.put("aggFuncs", this.getSixOps().getAggFuncs());
             j.put("condOfGVars", this.getSixOps().getCondOfGVars());
             j.put("condOfHaving", this.getSixOps().getCondOfHaving());
-//            System.out.println(this.getSixOps().getOpt());
             j.put("Opt", this.getSixOps().getOpt() == null
                                                 ? new ArrayList<>()
                                                 : this.getSixOps().getOpt());
-//            System.out.println(j);
         }catch(JSONException e){
             System.out.println("Something wrong when you JSON IT!");
         }

@@ -1,4 +1,5 @@
 /*
+ * @author Hangyu Wang (CWID: 10444246)
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -10,10 +11,6 @@ import java.util.*;
 import utils.partialParser;
 import utils.expParser;
 
-/**
- *
- * @author Holly
- */
 public class parserWhere extends partialParser{
     private List<String> parsedSql = new ArrayList<>();
     parserWhere(){
@@ -27,7 +24,7 @@ public class parserWhere extends partialParser{
 //        System.out.println(sql);
         super.sql = sql;
     }
-//    @Override
+    @Override
     public void parseClause(Map<String, String> attrToType, List<String> varToNum, Set<String> aggFuns){
 //        System.out.println("WHERE");
 //        System.out.println(sql);
@@ -37,7 +34,7 @@ public class parserWhere extends partialParser{
             this.parsedSql.add(expParser.parserCondWhere(sql.trim(), attrToType));
         }
     }
-//    @Override
+    @Override
     public List<String> getParsedClause(){
         return this.parsedSql;
     }
