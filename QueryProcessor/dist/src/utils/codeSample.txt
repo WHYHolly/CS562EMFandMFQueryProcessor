@@ -1,0 +1,127 @@
+/*
+ * @author Hangyu Wang (CWID: 10444246)
+ * This is the generated code.
+ * This should be runnable if your input is right.
+ */
+package outputFile;
+
+/**
+ * 
+ * 
+ */
+import java.util.*;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
+
+public class codeSample {
+    
+    class MFStruct{
+        /*
+         *  TODO: Here to generate by using Processor;
+         */
+        
+    }
+
+    private static final String USER = YOUR_USER_NAME;
+    private static final String PWD = YOUR_PWD;
+    private static final String URL = YOUR_URL;
+
+    private Connection con = null;
+
+    
+    /*
+     * main function
+     */
+    public static void main(String[] args){
+        codeSample res = new codeSample();
+        res.connect();
+        res.retreive();
+        res.close();
+    }
+
+    /*
+     * connect DB
+     */
+    void connect(){
+        try{
+            con = DriverManager.getConnection(URL, USER, PWD);
+
+        }catch(Exception exception){
+            System.out.println("Fail loading Driver!");
+            exception.printStackTrace();
+        }
+    }
+
+    /*
+     * disconnect DB
+     */
+    void close(){
+        try{
+
+            if (con != null) {
+                con.close();
+            }
+
+
+        }catch(Exception e){
+                e.printStackTrace();
+        }
+    }
+    
+    void retreive(){
+        try{
+            
+           
+            ResultSet rstm = null;
+            PreparedStatement pstm = null;
+            String ret = "select * from sales";
+            
+            boolean more;
+            pstm = con.prepareStatement(ret);
+            rstm = pstm.executeQuery(); 
+            Map<String, MFStruct> structList = new HashMap<>();
+            
+
+            more = rstm.next();
+            
+            while(more){
+
+
+                    if(!structList.containsKey(key)){
+                        MFStruct newStrcut = new MFStruct();
+                        
+                        structList.put(key, newStrcut);
+
+                    }
+                    
+                    
+            }
+            
+            for(int i = 1; i <= count; i++){
+                for(MFStruct curStruct: structList.values()){
+                    rstm = pstm.executeQuery(); 
+                    more = rstm.next();
+                    while(more){
+                        switch(i){
+                            /* TODO: Here to generate by using Processor; */
+                        }
+                        more = rstm.next();  
+                    }   
+                }
+            }
+
+            for(MFStruct curStruct: structList.values()){
+                
+                /* TODO: Here to generate by using Processor; */
+                 
+            }
+        
+        }catch(Exception exception){
+            System.out.println("Something Wrong with the Retrieve!");
+            exception.printStackTrace();
+        }
+    
+    
+    }
+}

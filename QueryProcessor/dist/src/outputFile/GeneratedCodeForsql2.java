@@ -14,30 +14,18 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class GeneratedCodeFortempSQL{
+public class GeneratedCodeForsql2{
     class MFStruct{
-        String cust;
+        String prod;
+        Integer month;
         Long sum_1_quant;
-        Long count_1_quant;
-        Double avg_1_quant;
         Long sum_2_quant;
-        Long count_2_quant;
-        Double avg_2_quant;
-        Long sum_3_quant;
-        Long count_3_quant;
-        Double avg_3_quant;
         MFStruct(){
 
-                cust = "";
+                prod = "";
+                month = null;
                 sum_1_quant = null;
-                count_1_quant = 0L;
-                avg_1_quant = null;
                 sum_2_quant = null;
-                count_2_quant = 0L;
-                avg_2_quant = null;
-                sum_3_quant = null;
-                count_3_quant = 0L;
-                avg_3_quant = null;
         }
     }
     private static final String USER = "postgres";
@@ -51,7 +39,7 @@ public class GeneratedCodeFortempSQL{
      * main function
      */
     public static void main(String[] args){
-        GeneratedCodeFortempSQL res = new GeneratedCodeFortempSQL();
+        GeneratedCodeForsql2 res = new GeneratedCodeForsql2();
         res.connect();
         res.retreive();
         res.close();
@@ -105,10 +93,11 @@ public class GeneratedCodeFortempSQL{
             
             while(more){
                 if(rstm.getInt("year")==2004) {
-                    String key = "" + rstm.getString("cust");
+                    String key = "" + rstm.getString("prod")+ rstm.getInt("month");
                     if(!structList.containsKey(key)){
                         MFStruct newStrcut = new MFStruct();
-                        newStrcut.cust = rstm.getString("cust");
+                        newStrcut.prod = rstm.getString("prod");
+                        newStrcut.month = rstm.getInt("month");
                         structList.put(key, newStrcut);
 
                     }
@@ -126,20 +115,11 @@ public class GeneratedCodeFortempSQL{
                     while(more){
                         switch(i){
                             case 1:
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("state").compareTo("NY") == 0) ){
+                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month) ){
                                     curStruct.sum_1_quant = curStruct.sum_1_quant == null ? rstm.getInt("quant") : curStruct.sum_1_quant+rstm.getInt("quant");
-                                    curStruct.count_1_quant = curStruct.count_1_quant == null ? 1 : curStruct.count_1_quant + 1;
-                                    curStruct.avg_1_quant = (curStruct.sum_1_quant + 0.0)/curStruct.count_1_quant;
                                 }
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("state").compareTo("NJ") == 0) ){
+                                if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0) ){
                                     curStruct.sum_2_quant = curStruct.sum_2_quant == null ? rstm.getInt("quant") : curStruct.sum_2_quant+rstm.getInt("quant");
-                                    curStruct.count_2_quant = curStruct.count_2_quant == null ? 1 : curStruct.count_2_quant + 1;
-                                    curStruct.avg_2_quant = (curStruct.sum_2_quant + 0.0)/curStruct.count_2_quant;
-                                }
-                                if(rstm.getInt("year")==2004 && (rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("state").compareTo("CT") == 0) ){
-                                    curStruct.sum_3_quant = curStruct.sum_3_quant == null ? rstm.getInt("quant") : curStruct.sum_3_quant+rstm.getInt("quant");
-                                    curStruct.count_3_quant = curStruct.count_3_quant == null ? 1 : curStruct.count_3_quant + 1;
-                                    curStruct.avg_3_quant = (curStruct.sum_3_quant + 0.0)/curStruct.count_3_quant;
                                 }
                             break;
                         }
@@ -149,17 +129,15 @@ public class GeneratedCodeFortempSQL{
             }
 
             ///////////////Print Out////////////
-            System.out.printf("%-7s  ", "cust");
-            System.out.printf("%-24s  ", "avg_1_quant");
-            System.out.printf("%-24s  ", "avg_2_quant");
-            System.out.printf("%-24s  \n", "avg_3_quant");
+            System.out.printf("%-7s  ", "prod");
+            System.out.printf("%-7s  ", "month");
+            System.out.printf("%-24s  \n", "sum_1_quant/sum_2_quant");
             for(MFStruct curStruct: structList.values()){
                 
-                if((curStruct.avg_2_quant!=null&&curStruct.avg_3_quant!=null&&curStruct.avg_1_quant!=null)?curStruct.avg_1_quant>curStruct.avg_2_quant&&curStruct.avg_1_quant>curStruct.avg_3_quant:false){
-                    System.out.printf("%-7s  ", curStruct.cust);
-                    System.out.printf("%24.16f  ", curStruct.avg_1_quant);
-                    System.out.printf("%24.16f  ", curStruct.avg_2_quant);
-                    System.out.printf("%24.16f  ", curStruct.avg_3_quant);
+                if(true){
+                    System.out.printf("%-7s  ", curStruct.prod);
+                    System.out.printf("%7s  ", curStruct.month);
+                    System.out.printf("%24.16f  ", (double) curStruct.sum_1_quant/curStruct.sum_2_quant);
                     System.out.println();
                 }
                  

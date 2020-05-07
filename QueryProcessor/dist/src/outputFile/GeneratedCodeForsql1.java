@@ -14,7 +14,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
-public class GeneratedCodeFortempSQL{
+public class GeneratedCodeForsql1{
     class MFStruct{
         String cust;
         Long sum_1_quant;
@@ -51,7 +51,7 @@ public class GeneratedCodeFortempSQL{
      * main function
      */
     public static void main(String[] args){
-        GeneratedCodeFortempSQL res = new GeneratedCodeFortempSQL();
+        GeneratedCodeForsql1 res = new GeneratedCodeForsql1();
         res.connect();
         res.retreive();
         res.close();

@@ -697,29 +697,29 @@ public class Processor {
     }
             
             
-//    public static void main(String[] args){
-//        String USER = "postgres";
-//        String PWD = "m8kimmWhyholly";
-//        String URL = "jdbc:postgresql://localhost:5432/postgres";
-//        Processor p = new Processor(USER, PWD, URL);
-//        
-//        String fileName = "tempSQL.sql";
-//
-//        p.getTypeFromDB();
-////        System.out.println("DBTHING DONE");
-//        p.readInput(fileName);
-////        System.out.println("CreateFile");
-//        p.createFile();
-////        System.out.println("CreateFile");
-//        p.writeStruct();
-////        System.out.println("writeFile");
-//        p.writeDBConnetionSetup();
-//        p.firstScan();
-////        System.out.println("FirstScan");
-//        p.otherScans();
-////        System.out.println("OtherScan");
-//        p.printResult();
-////        System.out.println("OtherScan");
-//            
-//    }
+    public static void main(String[] args){
+        String USER = "postgres";
+        String PWD = "m8kimmWhyholly";
+        String URL = "jdbc:postgresql://localhost:5432/postgres";
+        Processor p = new Processor(USER, PWD, URL);
+        
+        String fileName = "tempSQL.sql";
+
+        p.getTypeFromDB();
+//        System.out.println("DBTHING DONE");
+        p.readInput(fileName);
+//        System.out.println("CreateFile");
+        p.createFile();
+//        System.out.println("CreateFile");
+        p.writeStruct();
+//        System.out.println("writeFile");
+        p.writeDBConnetionSetup();
+        p.firstScan();
+//        System.out.println("FirstScan");
+        p.otherScans();
+//        System.out.println("OtherScan");
+        p.printResult();
+//        System.out.println("OtherScan");
+            
+    }
 }

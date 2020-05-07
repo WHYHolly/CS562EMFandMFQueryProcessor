@@ -1,13 +1,1 @@
-{
-  "Opt": [],
-  "projAttrs": ["prod", "quant"],
-  "gAttrs": "prod, quant",
-  "aggFuncs": ["count_1_prod", "count_2_prod"],
-  "numOfGVars": 2,
-  "condOfHaving": "if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2.0:false)",
-  "condOfGVars": [
-    "_",
-    "if(rstm.getString(\"prod\").compareTo(curStruct.prod) == 0)",
-    "if(rstm.getString(\"prod\").compareTo(curStruct.prod) == 0&&rstm.getInt(\"quant\")<curStruct.quant)"
-  ]
-}
+{"Opt":[],"projAttrs":["prod","quant"],"gAttrs":"prod, quant","aggFuncs":["count_1_prod","count_2_prod"],"numOfGVars":2,"condOfHaving":"if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2.0:false)","condOfGVars":["_","if(rstm.getString(\"prod\").compareTo(curStruct.prod) == 0)","if(rstm.getString(\"prod\").compareTo(curStruct.prod) == 0&&rstm.getInt(\"quant\")<curStruct.quant)"]}
