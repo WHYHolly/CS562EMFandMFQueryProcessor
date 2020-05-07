@@ -1,3 +1,5 @@
+-- for each product and for sales of 2004, show the month total sales to year total sales
+
 with mo_tot as(
   select prod, month, sum(quant) as mo_s
   from sales

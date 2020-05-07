@@ -1,3 +1,5 @@
+-- for each customer and each month of 2004 the cust's avg sale before, during and after this month
+
 with prev_mo as (
 	select y.cust, y.month, avg(x.quant) as prev_q
 	from sales as x, sales as y

@@ -1,3 +1,5 @@
+-- for each cust get the avg sales in NY, NJ and CT.
+-- and output if the avg in NY is greater than other two.
 with NY as(
 select cust, avg(quant) as avg_x
 from sales

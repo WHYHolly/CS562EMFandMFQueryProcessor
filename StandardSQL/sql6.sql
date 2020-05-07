@@ -1,9 +1,17 @@
-with temp1 as(
-select y.prod, y.month, avg(x.quant) as avg1, avg(z.quant) as avg2
-from sales as x, sales as y, sales as z
-where x.prod = y.prod and z.prod = y.prod and x.month = y.month - 1 and z.month = y.month + 1 and x.year = 2004 and y.year = 2004 and z.year = 2004
-group by y.prod, y.month)
+-- find each prod the median sale (assume odd number of sales)
 
-select temp1.prod, temp1.month, avg1, avg2
-from sales, temp1
-where sales.prod = temp1.prod and sales.month = temp1.month and sales.year = 2004 and sales.quant < avg2 and sales.quant > avg1
+with tot as(
+	select prod, count(*) as tot_cnt
+	from sales
+	group by prod
+),
+cmp as(
+	select y.prod, y.quant, count(x.quant) as cmp_cnt
+	from sales as x, sales as y
+	where x.prod = y.prod and x.quant < y.quant
+	group by y.prod, y.quant
+)
+
+select cmp.prod, cmp.quant
+from tot, cmp
+where tot.prod = cmp.prod and cmp_cnt*2 = tot_cnt

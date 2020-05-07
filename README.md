@@ -2,7 +2,7 @@
 
 ## Environment and Packages
 
-- IDE: NetBeans 8.2 and project is built based on Ant IDE
+- IDE: NetBeans 8.2 and project is built based on Ant build script
 
 - Packages/libraries:
 
@@ -20,6 +20,14 @@
 
 ## Instructions:
 
-Please check comments of the project in the
-`./QueryProcessor/src/QueryProcessorForMFandEMF/CodeGenerator.java` (Top Level where main is)
-and `./QueryProcessor/src/QueryProcessorForMFandEMF/Processor.java` (Core part)
+Please check comments of the project in the:
+
+- `./QueryProcessor/src/QueryProcessorForMFandEMF/CodeGenerator.java` (Top Level where main is)
+- and `./QueryProcessor/src/QueryProcessorForMFandEMF/Processor.java` (Core part)
+
+About running:
+Here I built the runnable jar in the `./QueryProcessor/dist/QueryProcessor.jar`:
+
+- Go to the file: run `java -cp "QueryProcessor.jar:lib/*" QueryProcessorForMFandEMF.CodeGenerator`. You can get the generated code by instruction there.
+
+- After the file is generated. You can check the output code in the `./QueryProcessor/dist/src/outputFile`. To run any of the output code. Go to this file and run `java -cp "../../lib/*" {OUTPUTFILE_NAME}.java`.
