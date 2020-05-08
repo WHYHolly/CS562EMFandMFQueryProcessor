@@ -4,29 +4,23 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/QueryProcessorForMFandEMF/Processor.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/parserSuchThat.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/partialParser.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForinput1.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/sixOperators.java</file>
             <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForsql1.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/QueryProcessorForMFandEMF/Parser.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql2.sql</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/parserSelect.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForsql4.java</file>
             <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/codeSample.txt</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/QueryProcessorForMFandEMF/OptAlgorithm.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/parserWhere.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/QueryProcessorForMFandEMF/PhiStruct.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/parserGroupBy.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/Group.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/parserHaving.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/PreReq.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql4.sql</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForsql6.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql3.sql</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForsql3.java</file>
             <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/QueryProcessorForMFandEMF/CodeGenerator.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/parserFrom.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql6.sql</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForsql2.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeFortempSQL.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/tempSQL.json</file>
             <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql1.sql</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/expParser.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/outputFile/GeneratedCodeForsql5.java</file>
             <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql1.json</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/utils/CONSTANTS.java</file>
-            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/SQLParser/SQLParser.java</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/tempSQL.sql</file>
+            <file>file:/Users/Holly/Desktop/study/SIT_CS/20Spring/CS562%20DBMS2/CS562EMFandMFQueryProcessor/QueryProcessor/src/inputFile/sql4.json</file>
         </group>
     </open-files>
 </project-private>

@@ -119,10 +119,10 @@ public class GeneratedCodeForsql4{
             ///////////////Other Scan(s)////////////
             int count = 2;
             for(int i = 1; i <= count; i++){
-                for(MFStruct curStruct: structList.values()){
-                    rstm = pstm.executeQuery(); 
-                    more = rstm.next();
-                    while(more){
+                rstm = pstm.executeQuery(); 
+                more = rstm.next();
+                while(more){
+                    for(MFStruct curStruct: structList.values()){
                         switch(i){
                             case 1:
                                 if(rstm.getInt("year")==2004 && (rstm.getString("prod").compareTo(curStruct.prod) == 0&&rstm.getInt("month")==curStruct.month-1) ){
@@ -142,8 +142,8 @@ public class GeneratedCodeForsql4{
                                 }
                             break;
                         }
-                        more = rstm.next();  
                     }   
+                    more = rstm.next(); 
                 }
             }
 

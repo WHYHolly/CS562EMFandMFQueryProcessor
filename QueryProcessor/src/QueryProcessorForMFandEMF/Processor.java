@@ -703,7 +703,7 @@ public class Processor {
         String URL = "jdbc:postgresql://localhost:5432/postgres";
         Processor p = new Processor(USER, PWD, URL);
         
-        String fileName = "tempSQL.sql";
+        String fileName = "sql3.sql";
 
         p.getTypeFromDB();
 //        System.out.println("DBTHING DONE");

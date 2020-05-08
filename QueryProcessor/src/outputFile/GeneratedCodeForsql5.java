@@ -117,10 +117,10 @@ public class GeneratedCodeForsql5{
             ///////////////Other Scan(s)////////////
             int count = 1;
             for(int i = 1; i <= count; i++){
-                for(MFStruct curStruct: structList.values()){
-                    rstm = pstm.executeQuery(); 
-                    more = rstm.next();
-                    while(more){
+                rstm = pstm.executeQuery(); 
+                more = rstm.next();
+                while(more){
+                    for(MFStruct curStruct: structList.values()){
                         switch(i){
                             case 1:
                                 if(rstm.getString("cust").compareTo(curStruct.cust) == 0&&rstm.getString("prod").compareTo(curStruct.prod) == 0){
@@ -135,8 +135,8 @@ public class GeneratedCodeForsql5{
                                 }
                             break;
                         }
-                        more = rstm.next();  
                     }   
+                    more = rstm.next(); 
                 }
             }
 

@@ -109,10 +109,10 @@ public class GeneratedCodeForsql6{
             ///////////////Other Scan(s)////////////
             int count = 1;
             for(int i = 1; i <= count; i++){
-                for(MFStruct curStruct: structList.values()){
-                    rstm = pstm.executeQuery(); 
-                    more = rstm.next();
-                    while(more){
+                rstm = pstm.executeQuery(); 
+                more = rstm.next();
+                while(more){
+                    for(MFStruct curStruct: structList.values()){
                         switch(i){
                             case 1:
                                 if(rstm.getString("prod").compareTo(curStruct.prod) == 0){
@@ -123,8 +123,8 @@ public class GeneratedCodeForsql6{
                                 }
                             break;
                         }
-                        more = rstm.next();  
                     }   
+                    more = rstm.next(); 
                 }
             }
 
@@ -133,7 +133,7 @@ public class GeneratedCodeForsql6{
             System.out.printf("%-7s  \n", "quant");
             for(MFStruct curStruct: structList.values()){
                 
-                if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod==curStruct.count_1_prod/2.0:false){
+                if((curStruct.count_2_prod!=null&&curStruct.count_1_prod!=null)?curStruct.count_2_prod*2==curStruct.count_1_prod:false){
                     System.out.printf("%-7s  ", curStruct.prod);
                     System.out.printf("%7s  ", curStruct.quant);
                     System.out.println();
