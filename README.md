@@ -19,7 +19,7 @@
 - QueryProcessor is where my project stores:
 
   - src, where my code is. (Develop mode) => Thus the outputfiles are in the outputfile folder in this folder; the inputfiles(ESQL and json) are in the inputfile folder in this folder.
-  - dist, where the runnable jar is. (User mode) => => Thus the outputfiles are in the src/outputfile folder in this folder; the inputfiles(ESQL and json) are in the src/inputfile folder in this folder..
+  - dist, where the runnable jar is. (User mode) => Thus the outputfiles are in the src/outputfile folder in this folder; the inputfiles(ESQL and json) are in the src/inputfile folder in this folder..
 
   Please follow the following instrcution to run and test.
 
