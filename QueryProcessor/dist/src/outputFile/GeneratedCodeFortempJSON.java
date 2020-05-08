@@ -40,9 +40,9 @@ public class GeneratedCodeFortempJSON{
                 avg_3_quant = null;
         }
     }
-    private static final String USER = "Holly";
+    private static final String USER = "postgres";
     private static final String PWD = "m8kimmWhyholly";
-    private static final String URL = "jdbc:postgresql://localhost:5432/HollyNewDB";
+    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
 
     private Connection con = null;
 

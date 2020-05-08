@@ -262,11 +262,17 @@ public class CodeGenerator {
                         System.out.println("******************* Your code is generated *******************");
                         System.out.println("*********** Please go to outputFile folder to check ***********");
                         break;
+                    default:
+                        System.out.println("////////////////////////Error////////////////////////");
+                        System.out.println("Please make sure you input the right instruction");
+                        System.out.println("/////////////////////////End/////////////////////////");
+                        break;
                 }
             }catch(Exception e){
                 System.out.println("////////////////////////Error////////////////////////");
                 System.out.println("Please make sure you input the right instruction");
                 System.out.println("/////////////////////////End/////////////////////////");
+                input.nextLine();
             } 
         }
         input.close();
