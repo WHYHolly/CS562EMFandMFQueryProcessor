@@ -76,7 +76,10 @@ package QueryProcessorForMFandEMF;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 
 public class CodeGenerator {
     public static void main(String[] args){
@@ -86,11 +89,22 @@ public class CodeGenerator {
          * String USER = YOUR_USERNAME;
          * String PWD = YOUR_PWD;
          * String URL = YOUR_URL;
-        */
+         */
+        String USER = "";
+        String PWD = "";
+        String URL = "";
         
-        String USER = "postgres";
-        String PWD = "m8kimmWhyholly";
-        String URL = "jdbc:postgresql://localhost:5432/postgres";
+        File configJSON = new File("./src/utils/DB_config.json");
+        JSONObject j = null;
+        try{
+            String jStr = FileUtils.readFileToString(configJSON, StandardCharsets.UTF_8);
+            j = new JSONObject(jStr);
+            USER = j.getString("USER");
+            PWD = j.getString("PWD");
+            URL = j.getString("URL");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         
         /*
          * Here you can use your own test here:
